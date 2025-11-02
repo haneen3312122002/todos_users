@@ -9,5 +9,23 @@
   "retry": "إعادة المحاولة",
   "network_error": "خطأ في الاتصال بالشبكة",
   "login_success": "تم تسجيل الدخول باسم:",
-  "invalid_credentials": "بيانات الدخول غير صحيحة. حاول مرة أخرى."
+  "invalid_credentials": "بيانات الدخول غير صحيحة. حاول مرة أخرى.",
+  "no_tasks": "لا توجد مهام بعد",
+  "failed_load_tasks": "فشل تحميل المهام",
+
+  "user_details": "تفاصيل المستخدم",
+  "address_info": "معلومات العنوان",
+  "bank_info": "معلومات البنك",
+  "company_info": "معلومات الشركة",
+  "address_details": "تفاصيل العنوان",
+  "bank_details": "تفاصيل البنك",
+  "company_details": "تفاصيل الشركة",
+  "country": "البلد",
+  "city": "المدينة",
+  "card_type": "نوع البطاقة",
+  "card_number": "رقم البطاقة",
+  "company_name": "اسم الشركة",
+  "title": "الوظيفة",
+  "users_title": " المستخدمون",
+  "failed_load_users": "فشل تحميل المستخدمين"
 }

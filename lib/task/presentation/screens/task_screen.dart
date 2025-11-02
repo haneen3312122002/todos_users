@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:notes_tasks/core/widgets/app_scafold.dart';
 import 'package:notes_tasks/core/widgets/empty_vieq.dart';
+
 import 'package:notes_tasks/core/widgets/error_view.dart';
 import 'package:notes_tasks/core/widgets/loading_indicator.dart';
 import 'package:notes_tasks/core/widgets/app_card.dart';
@@ -18,7 +20,7 @@ class TaskListScreen extends ConsumerWidget {
     final viewModel = ref.read(getAllTasksViewModelProvider.notifier);
 
     return AppScaffold(
-      title: 'My Tasks',
+      title: 'app_title'.tr(),
       actions: [
         IconButton(
           icon: const Icon(Icons.refresh),
@@ -28,13 +30,13 @@ class TaskListScreen extends ConsumerWidget {
       body: tasksState.when(
         data: (List<TaskEntity> tasks) {
           if (tasks.isEmpty) {
-            return const EmptyView(message: 'No tasks yet');
+            return EmptyView(message: 'no_tasks'.tr());
           }
 
           return RefreshIndicator(
             onRefresh: () async => await viewModel.refreshTasks(),
             child: ListView.builder(
-              shrinkWrap: true, // لأن AppScaffold يدعم scrollable
+              shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: tasks.length,
               itemBuilder: (context, index) {
@@ -59,7 +61,7 @@ class TaskListScreen extends ConsumerWidget {
         loading: () => const LoadingIndicator(withBackground: false),
 
         error: (error, _) => ErrorView(
-          message: 'Failed to load tasks',
+          message: 'failed_load_tasks'.tr(),
           onRetry: viewModel.refreshTasks,
         ),
       ),

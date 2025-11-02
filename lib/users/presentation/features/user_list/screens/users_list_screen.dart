@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:notes_tasks/core/widgets/app_scafold.dart';
 import 'package:notes_tasks/core/widgets/error_view.dart';
 import 'package:notes_tasks/core/widgets/loading_indicator.dart';
@@ -17,7 +18,7 @@ class UsersListScreen extends ConsumerWidget {
 
     return AppScaffold(
       scrollable: false,
-      title: '👥 Users',
+      title: 'users_title'.tr(), // ✅ ترجمة العنوان
       actions: [
         IconButton(
           icon: const Icon(Icons.refresh),
@@ -29,7 +30,7 @@ class UsersListScreen extends ConsumerWidget {
             UserList(users: users, onRefresh: viewModel.fetchUsers),
         loading: () => const LoadingIndicator(),
         error: (e, _) => ErrorView(
-          message: 'Failed to load users',
+          message: 'failed_load_users'.tr(), // ✅ ترجمة رسالة الخطأ
           onRetry: viewModel.fetchUsers,
         ),
       ),

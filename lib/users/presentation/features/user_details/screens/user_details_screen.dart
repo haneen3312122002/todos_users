@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:notes_tasks/core/widgets/app_card.dart';
 import 'package:notes_tasks/core/widgets/app_list_tile.dart';
 import 'package:notes_tasks/core/widgets/app_scafold.dart';
@@ -22,7 +23,6 @@ class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> {
   @override
   void initState() {
     super.initState();
-
     Future.microtask(() {
       ref
           .read(getUserAddressViewModelProvider.notifier)
@@ -39,28 +39,29 @@ class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-      title: ' User Details',
+      title: 'user_details'.tr(),
       scrollable: true,
       usePadding: false,
       body: Column(
         children: [
           const SizedBox(height: 12),
 
+          // 🏠 Address
           AppCard(
             child: AppListTile(
               leading: const Icon(Icons.home_outlined),
-              title: ' Address Info',
+              title: 'address_info'.tr(),
               trailing: const Icon(Icons.arrow_forward_ios, size: 18),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (_) => UserSectionDetailsView<AddressEntity>(
-                      title: ' Address Details',
+                      title: 'address_details'.tr(),
                       provider: getUserAddressViewModelProvider,
                       mapper: (data) => {
-                        'Country': data.country,
-                        'City': data.city,
+                        'country'.tr(): data.country,
+                        'city'.tr(): data.city,
                       },
                     ),
                   ),
@@ -69,21 +70,22 @@ class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> {
             ),
           ),
 
+          // 💳 Bank
           AppCard(
             child: AppListTile(
               leading: const Icon(Icons.credit_card_outlined),
-              title: ' Bank Info',
+              title: 'bank_info'.tr(),
               trailing: const Icon(Icons.arrow_forward_ios, size: 18),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (_) => UserSectionDetailsView<BankEntity>(
-                      title: ' Bank Details',
+                      title: 'bank_details'.tr(),
                       provider: getUserBankViewModelProvider,
                       mapper: (data) => {
-                        'Card Type': data.cardType,
-                        'Card Number': data.cardNumber,
+                        'card_type'.tr(): data.cardType,
+                        'card_number'.tr(): data.cardNumber,
                       },
                     ),
                   ),
@@ -92,21 +94,22 @@ class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> {
             ),
           ),
 
+          // 🏢 Company
           AppCard(
             child: AppListTile(
               leading: const Icon(Icons.business_outlined),
-              title: ' Company Info',
+              title: 'company_info'.tr(),
               trailing: const Icon(Icons.arrow_forward_ios, size: 18),
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (_) => UserSectionDetailsView<CompanyEntity>(
-                      title: ' Company Details',
+                      title: 'company_details'.tr(),
                       provider: getUserCompanyViewModelProvider,
                       mapper: (data) => {
-                        'Company Name': data.name,
-                        'Title': data.title,
+                        'company_name'.tr(): data.name,
+                        'title'.tr(): data.title,
                       },
                     ),
                   ),

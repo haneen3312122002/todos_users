@@ -9,5 +9,24 @@
   "retry": "Retry",
   "network_error": "Network connection error",
   "login_success": "Logged in as:",
-  "invalid_credentials": "Invalid credentials. Please try again."
+  "invalid_credentials": "Invalid credentials. Please try again.",
+  "no_tasks": "No tasks yet",
+  "failed_load_tasks": "Failed to load tasks",
+
+  "user_details": "User Details",
+  "address_info": "Address Info",
+  "bank_info": "Bank Info",
+  "company_info": "Company Info",
+  "address_details": "Address Details",
+  "bank_details": "Bank Details",
+  "company_details": "Company Details",
+  "country": "Country",
+  "city": "City",
+  "card_type": "Card Type",
+  "card_number": "Card Number",
+  "company_name": "Company Name",
+  "title": "Title",
+  "users_title": " Users",
+  "failed_load_users": "Failed to load users"
+
 }

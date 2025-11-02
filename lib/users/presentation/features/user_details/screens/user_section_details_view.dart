@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:notes_tasks/core/widgets/app_card.dart';
 import 'package:notes_tasks/core/widgets/app_list_tile.dart';
 import 'package:notes_tasks/core/widgets/app_scafold.dart';
+import 'package:notes_tasks/core/widgets/empty_vieq.dart';
 import 'package:notes_tasks/core/widgets/error_view.dart';
 import 'package:notes_tasks/core/widgets/loading_indicator.dart';
 
@@ -25,26 +27,32 @@ class UserSectionDetailsView<T> extends ConsumerWidget {
     return AppScaffold(
       title: title,
       body: state.when(
-        loading: () => const LoadingIndicator(),
+        loading: () => const LoadingIndicator(withBackground: false),
+
         error: (e, _) => ErrorView(
           fullScreen: true,
-          message: 'Failed to load ${title.toLowerCase()}',
+          message: 'failed_load_tasks'.tr(), // 🔹 ترجمة عامة لرسائل الخطأ
         ),
+
         data: (data) {
           if (data == null) {
-            return const Center(child: Text('No data available'));
+            return EmptyView(message: 'no_data'.tr());
           }
 
           final mapped = mapper(data);
 
-          return AppCard(
-            child: Column(
-              children: mapped.entries.map((e) {
-                return AppListTile(
-                  title: e.key,
-                  subtitle: e.value?.toString() ?? '-',
-                );
-              }).toList(),
+          return Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: AppCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: mapped.entries.map((e) {
+                  return AppListTile(
+                    title: e.key,
+                    subtitle: e.value?.toString() ?? '-',
+                  );
+                }).toList(),
+              ),
             ),
           );
         },
