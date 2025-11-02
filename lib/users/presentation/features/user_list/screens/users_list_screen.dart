@@ -26,8 +26,10 @@ class UsersListScreen extends ConsumerWidget {
         ),
       ],
       body: usersState.when(
-        data: (List<UserEntity> users) =>
-            UserList(users: users, onRefresh: viewModel.fetchUsers),
+        data: (List<UserEntity> users) => RefreshIndicator(
+          onRefresh: () async => await viewModel.refreshUsers(),
+          child: UserList(users: users, onRefresh: viewModel.refreshUsers),
+        ),
         loading: () => const LoadingIndicator(),
         error: (e, _) => ErrorView(
           message: 'failed_load_users'.tr(), // ✅ ترجمة رسالة الخطأ

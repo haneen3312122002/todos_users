@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:notes_tasks/core/widgets/app_dialog.dart';
+import 'package:notes_tasks/core/widgets/app_fab.dart';
 import 'package:notes_tasks/core/widgets/app_scafold.dart';
 import 'package:notes_tasks/core/widgets/empty_vieq.dart';
-
 import 'package:notes_tasks/core/widgets/error_view.dart';
 import 'package:notes_tasks/core/widgets/loading_indicator.dart';
 import 'package:notes_tasks/core/widgets/app_card.dart';
 import 'package:notes_tasks/core/widgets/app_list_tile.dart';
 import 'package:notes_tasks/task/domain/entities/task_entity.dart';
+import 'package:notes_tasks/task/presentation/screens/add_task_screen.dart';
 import 'package:notes_tasks/task/presentation/viewmodels/get_all_tasks_viewmodel.dart';
 
 class TaskListScreen extends ConsumerWidget {
@@ -48,9 +50,7 @@ class TaskListScreen extends ConsumerWidget {
                       task.completed ? Icons.check_circle : Icons.pending,
                       color: task.completed ? Colors.green : Colors.orange,
                     ),
-                    onTap: () {
-                      // TODO: Navigate to details or edit
-                    },
+                    onTap: () {},
                   ),
                 );
               },
@@ -64,6 +64,13 @@ class TaskListScreen extends ConsumerWidget {
           message: 'failed_load_tasks'.tr(),
           onRetry: viewModel.refreshTasks,
         ),
+      ),
+      floatingActionButton: AppFAB(
+        tooltip: 'Add Task',
+        onPressed: () {
+          //open add task screen
+          AppDialog.show(context: context, content: AddTaskScreen());
+        },
       ),
     );
   }

@@ -13,12 +13,21 @@ class GetBasicUsersViewModel extends AsyncNotifier<List<UserEntity>> {
 
   @override
   FutureOr<List<UserEntity>> build() async {
-    // ✅ الجلب التلقائي عند الإنشاء
     final users = await _useCase.call();
     return users;
   }
 
   Future<void> fetchUsers() async {
+    state = const AsyncLoading();
+    try {
+      final users = await _useCase.call();
+      state = AsyncData(users);
+    } catch (e, st) {
+      state = AsyncError(e, st);
+    }
+  }
+
+  Future<void> refreshUsers() async {
     state = const AsyncLoading();
     try {
       final users = await _useCase.call();
