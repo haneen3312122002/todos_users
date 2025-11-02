@@ -1,33 +1,34 @@
 import 'package:flutter/material.dart';
 
-class CustomTextField extends StatelessWidget {
+class AppCustomTextField extends StatelessWidget {
   final TextEditingController controller;
-  final String label;
+  final String? label;
+  final String? hint;
+  final bool obscureText;
   final int maxLines;
-  final bool expands;
   final TextInputAction? inputAction;
+  final TextInputType? keyboardType;
 
-  const CustomTextField({
+  const AppCustomTextField({
     super.key,
     required this.controller,
-    required this.label,
+    this.label,
+    this.hint,
+    this.obscureText = false,
     this.maxLines = 1,
-    this.expands = false,
     this.inputAction,
+    this.keyboardType,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
-      maxLines: expands ? null : maxLines,
-      expands: expands,
+      obscureText: obscureText,
+      maxLines: maxLines,
       textInputAction: inputAction,
-      decoration: InputDecoration(
-        labelText: label,
-        border: const OutlineInputBorder(),
-        contentPadding: const EdgeInsets.all(12),
-      ),
+      keyboardType: keyboardType,
+      decoration: InputDecoration(labelText: label, hintText: hint),
     );
   }
 }

@@ -1,0 +1,13 @@
+{
+  "app_title": "Notes Tasks",
+  "login": "Login",
+  "username": "Username",
+  "password": "Password",
+  "logout": "Logout",
+  "loading_msg": "Loading",
+  "error_general": "Something went wrong, please try again.",
+  "retry": "Retry",
+  "network_error": "Network connection error",
+  "login_success": "Logged in as:",
+  "invalid_credentials": "Invalid credentials. Please try again."
+}

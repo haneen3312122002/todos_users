@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:notes_tasks/core/widgets/app_scafold.dart';
+import 'package:notes_tasks/core/widgets/custom_text_field.dart';
+import 'package:notes_tasks/core/widgets/primary_button.dart';
+import 'package:notes_tasks/core/widgets/loading_indicator.dart';
+import 'package:notes_tasks/core/widgets/error_view.dart';
+import 'package:notes_tasks/core/constants/spacing.dart';
 import 'package:notes_tasks/auth/presentation/viewmodels/login_viewmodel.dart';
-import 'package:notes_tasks/auth/presentation/widgets/button.dart';
-import 'package:notes_tasks/auth/presentation/widgets/textfield.dart';
-import 'package:notes_tasks/users/presentation/screens/users_screnn.dart';
+import 'package:notes_tasks/users/presentation/features/user_list/screens/users_list_screen.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -28,57 +33,72 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final loginState = ref.watch(loginViewModelProvider);
     final loginNotifier = ref.read(loginViewModelProvider.notifier);
+    print(
+      "PRIMARY COLOR................................................................ => ${Theme.of(context).colorScheme.primary}",
+    );
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            MyTextField(controller: usernameController, label: 'Username'),
-            const SizedBox(height: 16),
-            MyTextField(
-              controller: passwordController,
-              label: 'Password',
-              obscureText: true,
-            ),
-            const SizedBox(height: 20),
-            MyButton(
-              text: 'Login',
-              isLoading: loginState.isLoading,
-              onTap: () async {
-                await loginNotifier.login(
-                  usernameController.text,
-                  passwordController.text,
-                );
-              },
-            ),
-            const SizedBox(height: 20),
-            loginState.when(
-              data: (auth) {
-                if (auth == null) return const SizedBox();
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (_) => const UserScreen()),
-                    (route) => false,
-                  );
-                });
+    return AppScaffold(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // 👤 Username Field
+          AppCustomTextField(
+            controller: usernameController,
+            label: 'username'.tr(),
+            inputAction: TextInputAction.next,
+          ),
+          SizedBox(height: AppSpacing.spaceMD),
 
-                return Text(
-                  ' Logged in as: ${auth.user?.firstName ?? "Unknown"}',
-                  style: const TextStyle(fontSize: 16, color: Colors.green),
+          // 🔒 Password Field
+          AppCustomTextField(
+            controller: passwordController,
+            label: 'password'.tr(),
+            obscureText: true,
+            inputAction: TextInputAction.done,
+          ),
+          SizedBox(height: AppSpacing.spaceLG),
+
+          // 🔘 Login Button
+          AppPrimaryButton(
+            label: 'login'.tr(),
+            isLoading: loginState.isLoading,
+            onPressed: () async {
+              await loginNotifier.login(
+                usernameController.text.trim(),
+                passwordController.text.trim(),
+              );
+            },
+          ),
+          SizedBox(height: AppSpacing.spaceLG),
+
+          // 🔁 State Handling (Data, Loading, Error)
+          loginState.when(
+            data: (auth) {
+              if (auth == null) return const SizedBox();
+
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (_) => UsersListScreen()),
+                  (route) => false,
                 );
-              },
-              loading: () => const SizedBox(),
-              error: (e, _) => const Text(
-                ' Invalid credentials',
-                style: TextStyle(color: Colors.red),
-              ),
+              });
+
+              return Text(
+                '${"login_success".tr()} ${auth.user?.firstName ?? "User"}',
+                textAlign: TextAlign.center,
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyLarge?.copyWith(color: Colors.green),
+              );
+            },
+            loading: () => const LoadingIndicator(withBackground: false),
+            error: (e, _) => ErrorView(
+              message: 'invalid_credentials'.tr(),
+              fullScreen: false,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:notes_tasks/auth/domain/entities/auth_entity.dart';
 import 'package:notes_tasks/auth/domain/usecases/login_usecase.dart';
 import 'package:notes_tasks/auth/presentation/providers/login_provider.dart';
+import 'package:notes_tasks/users/presentation/features/user_list/screens/users_list_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final loginViewModelProvider =
@@ -56,7 +57,10 @@ class LoginViewModel extends AsyncNotifier<AuthEntity?> {
 
     if (token != null && token.isNotEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.pushReplacementNamed(context, '/users');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const UsersListScreen()),
+        );
       });
     }
   }

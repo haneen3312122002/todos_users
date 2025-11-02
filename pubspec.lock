@@ -225,6 +225,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.1"
+  easy_localization:
+    dependency: "direct main"
+    description:
+      name: easy_localization
+      sha256: "2ccdf9db8fe4d9c5a75c122e6275674508fd0f0d49c827354967b8afcc56bbed"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.8"
+  easy_logger:
+    dependency: transitive
+    description:
+      name: easy_logger
+      sha256: c764a6e024846f33405a2342caf91c62e357c24b02c04dbc712ef232bf30ffb7
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
   fake_async:
     dependency: transitive
     description:
@@ -270,6 +286,11 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.0.0"
+  flutter_localizations:
+    dependency: transitive
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   flutter_riverpod:
     dependency: "direct main"
     description:
@@ -278,6 +299,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.3"
+  flutter_screenutil:
+    dependency: "direct main"
+    description:
+      name: flutter_screenutil
+      sha256: "8239210dd68bee6b0577aa4a090890342d04a136ce1c81f98ee513fc0ce891de"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.9.3"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -853,6 +882,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.5.1"
+  v:
+    dependency: "direct main"
+    description:
+      name: v
+      sha256: e72d5e73f41f9ac3e02393b83816f89f13f7944d47b128e52b4313ee0125429b
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.0-origin.0.1"
+  val:
+    dependency: transitive
+    description:
+      name: val
+      sha256: b214ffe7b7aa1a23671ba54fa55970f9ef7bd60191a1710c3ca1966fd036b59e
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.0-origin.0.1"
   vector_math:
     dependency: transitive
     description:
@@ -869,6 +914,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "15.0.2"
+  vos:
+    dependency: transitive
+    description:
+      name: vos
+      sha256: f286b8cea0ad837c9485bb450a3217612bcc87ff90d927390ff1b5c301e5f9f0
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.0-origin.0.1"
+  vux:
+    dependency: transitive
+    description:
+      name: vux
+      sha256: b488d4d96350c7ab0c5e3bc8c04f796e08c7baf3cdc4575f8c1df164346e7d55
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.0-origin.0.1"
   watcher:
     dependency: transitive
     description:
