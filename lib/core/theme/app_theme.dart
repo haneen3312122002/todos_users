@@ -3,10 +3,10 @@ import '../constants/colors.dart';
 import 'text_styles.dart';
 
 class AppTheme {
+  //  Light Theme (الكود الحالي)
   static final ThemeData lightTheme = ThemeData(
     useMaterial3: true,
-
-    //  General Colors
+    // General Colors
     primaryColor: AppColors.primary,
     scaffoldBackgroundColor: AppColors.background,
     colorScheme: ColorScheme.fromSeed(
@@ -17,11 +17,8 @@ class AppTheme {
       error: AppColors.error,
       surface: AppColors.surface,
       onSurface: AppColors.textPrimary,
-      background: AppColors.background,
-      onBackground: AppColors.textPrimary,
     ),
-
-    //  AppBar Theme
+    // AppBar Theme
     appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.primary,
       foregroundColor: Colors.white,
@@ -33,15 +30,13 @@ class AppTheme {
         fontWeight: FontWeight.bold,
       ),
     ),
-
-    //  Text Theme
+    // Text Theme
     textTheme: AppTextStyles.textTheme,
-
-    //  Elevated Button Theme
+    // Elevated Button Theme
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.primary, // خلفية الزر
-        foregroundColor: Colors.white, // ✅ لون النص والأيقونة
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         textStyle: AppTextStyles.body.copyWith(
           fontWeight: FontWeight.bold,
@@ -50,8 +45,7 @@ class AppTheme {
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
       ),
     ),
-
-    //  Input Field Theme
+    // Input Field Theme
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: AppColors.surface,
@@ -68,8 +62,7 @@ class AppTheme {
       ),
       hintStyle: const TextStyle(color: Colors.grey),
     ),
-
-    //  Cards & ListTiles
+    // Cards & ListTiles
     cardTheme: CardThemeData(
       color: AppColors.surface,
       shadowColor: AppColors.border,
@@ -90,12 +83,120 @@ class AppTheme {
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ),
-    //  Floating Action Button
+
     floatingActionButtonTheme: FloatingActionButtonThemeData(
       backgroundColor: AppColors.primary,
       foregroundColor: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       elevation: 4,
     ),
+  );
+
+  static final ThemeData darkTheme = ThemeData(
+    useMaterial3: true,
+
+    // General Colors
+    primaryColor: AppColors.primary,
+    scaffoldBackgroundColor: AppColors.darkBackground,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: AppColors.primary,
+      brightness: Brightness.dark, // <--- هام: لتفعيل وضع Dark Mode
+      secondary: AppColors.secondary,
+      onSecondary: Colors.black, // النص على الثانوي يصبح داكن
+      error: AppColors.error,
+      surface: AppColors.darkSurface, // لون السطح الداكن (للكروت والحقول)
+      onSurface: AppColors.textDark, // النص على السطح الداكن (لون فاتح)
+      background: AppColors.darkBackground,
+      onBackground: AppColors.textDark,
+    ),
+
+    // AppBar Theme
+    appBarTheme: AppBarTheme(
+      backgroundColor: AppColors.darkSurface, // لون داكن للسماح للخلفية بالظهور
+      foregroundColor: AppColors.textDark,
+      elevation: 1,
+      centerTitle: true,
+      titleTextStyle: AppTextStyles.body.copyWith(
+        color: AppColors.textDark,
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+      ),
+    ),
+
+    // Text Theme
+    textTheme: AppTextStyles.textTheme,
+
+    // Elevated Button Theme (نفس الألوان الأساسية، فقط نغير لون الخلفية المعطلة)
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColors.primary,
+        foregroundColor:
+            AppColors.textDark, // النص على الزر الأساسي (أفتح من الأبيض النقي)
+        disabledBackgroundColor: AppColors.darkSurface.withOpacity(
+          0.5,
+        ), // لون عند تعطيل الزر
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        textStyle: AppTextStyles.body.copyWith(
+          fontWeight: FontWeight.bold,
+          color: AppColors.textDark,
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+      ),
+    ),
+
+    // Input Field Theme
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: AppColors.darkSurface,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      hintStyle: TextStyle(color: AppColors.textDark.withOpacity(0.5)),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: BorderSide(color: AppColors.darkBorder),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: BorderSide(color: AppColors.darkBorder),
+      ),
+      focusedBorder: const OutlineInputBorder(
+        borderSide: BorderSide(color: AppColors.primary, width: 1.5),
+      ),
+    ),
+
+    // Cards & ListTiles
+    cardTheme: CardThemeData(
+      color: AppColors.darkSurface,
+      shadowColor: Colors.black.withOpacity(0.7),
+      elevation: 5,
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: AppColors.darkBorder),
+      ),
+    ),
+    listTileTheme: ListTileThemeData(
+      titleTextStyle: AppTextStyles.body.copyWith(
+        fontWeight: FontWeight.w600,
+        color: AppColors.textDark,
+      ),
+      subtitleTextStyle: AppTextStyles.caption.copyWith(
+        color: AppColors.textDark.withOpacity(0.7),
+      ),
+      iconColor: AppColors.primary,
+      tileColor: AppColors.darkSurface,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    ),
+
+    // Floating Action Button
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      backgroundColor: AppColors.primary,
+      foregroundColor: AppColors.textDark,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      elevation: 6,
+    ),
+
+    // Divider (الخط الفاصل)
+    dividerTheme: DividerThemeData(color: AppColors.darkBorder, thickness: 0.5),
   );
 }

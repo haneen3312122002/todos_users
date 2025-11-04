@@ -27,5 +27,9 @@
   "company_name": "اسم الشركة",
   "title": "الوظيفة",
   "users_title": " المستخدمون",
-  "failed_load_users": "فشل تحميل المستخدمين"
+  "failed_load_users": "فشل تحميل المستخدمين",
+  "first_cart": "سلتي",
+  "no_cart_found": "لا توجد سلة بعد",
+  "checkout": "إتمام الطلب"
+
 }

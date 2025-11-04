@@ -1,0 +1,77 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:notes_tasks/core/widgets/app_dialog.dart';
+import 'package:notes_tasks/core/widgets/app_fab.dart';
+import 'package:notes_tasks/core/widgets/app_scaffold.dart';
+import 'package:notes_tasks/core/widgets/empty_vieq.dart';
+import 'package:notes_tasks/core/widgets/error_view.dart';
+import 'package:notes_tasks/core/widgets/loading_indicator.dart';
+import 'package:notes_tasks/core/widgets/app_card.dart';
+import 'package:notes_tasks/core/widgets/app_list_tile.dart';
+import 'package:notes_tasks/modules/task/domain/entities/task_entity.dart';
+import 'package:notes_tasks/modules/task/presentation/screens/add_task_screen.dart';
+import 'package:notes_tasks/modules/task/presentation/viewmodels/get_all_tasks_viewmodel.dart';
+
+class TaskListScreen extends ConsumerWidget {
+  const TaskListScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tasksState = ref.watch(getAllTasksViewModelProvider);
+    final viewModel = ref.read(getAllTasksViewModelProvider.notifier);
+
+    return AppScaffold(
+      title: 'app_title'.tr(),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.refresh),
+          onPressed: viewModel.refreshTasks,
+        ),
+      ],
+      body: tasksState.when(
+        data: (List<TaskEntity> tasks) {
+          if (tasks.isEmpty) {
+            return EmptyView(message: 'no_tasks'.tr());
+          }
+
+          return RefreshIndicator(
+            onRefresh: () async => await viewModel.refreshTasks(),
+            child: ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: tasks.length,
+              itemBuilder: (context, index) {
+                final task = tasks[index];
+                return AppCard(
+                  child: AppListTile(
+                    title: task.todo,
+                    trailing: Icon(
+                      task.completed ? Icons.check_circle : Icons.pending,
+                      color: task.completed ? Colors.green : Colors.orange,
+                    ),
+                    onTap: () {},
+                  ),
+                );
+              },
+            ),
+          );
+        },
+
+        loading: () => const LoadingIndicator(withBackground: false),
+
+        error: (error, _) => ErrorView(
+          message: 'failed_load_tasks'.tr(),
+          onRetry: viewModel.refreshTasks,
+        ),
+      ),
+      floatingActionButton: AppFAB(
+        tooltip: 'Add Task',
+        onPressed: () {
+          //open add task screen
+          AppDialog.show(context: context, content: AddTaskScreen());
+        },
+      ),
+    );
+  }
+}

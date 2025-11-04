@@ -17,6 +17,13 @@ class AppColors {
 
   static const Color border = Color(0xFFDDDDDD);
 
-  // static const Color darkBackground = Color(0xFF121212);
-  // static const Color darkText = Color(0xFFFFFFFF);
+  // 🌙 Dark Theme Colors
+
+  static const Color darkBackground = Color(0xFF121212); // خلفية داكنة جداً
+
+  static const Color darkSurface = Color(0xFF1D1D1D); // للبطاقات وحقول الإدخال
+
+  static const Color textDark = Color(0xFFFFFFFF); // نصوص فاتحة
+
+  static const Color darkBorder = Color(0xFF333333);
 }
