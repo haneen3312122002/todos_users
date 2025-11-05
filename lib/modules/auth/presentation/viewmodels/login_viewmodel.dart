@@ -5,7 +5,6 @@ import 'package:notes_tasks/core/widgets/app_navbar_container.dart';
 import 'package:notes_tasks/modules/auth/domain/entities/auth_entity.dart';
 import 'package:notes_tasks/modules/auth/domain/usecases/login_usecase.dart';
 import 'package:notes_tasks/modules/auth/presentation/providers/login_provider.dart';
-import 'package:notes_tasks/modules/users/presentation/features/user_list/screens/users_list_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final loginViewModelProvider =

@@ -72,19 +72,11 @@ class _FirstCartScreenState extends ConsumerState<FirstCartScreen> {
                       MainAxisAlignment.spaceBetween, // <--- هام: لنشر العناصر
 
                   children: [
-                    // 1. ملخص السلة (يحتل مساحة أكبر قليلاً)
-                    Expanded(
-                      flex: 3, // نمنحه وزن 3
+                    Expanded(flex: 3, child: CartSummary(cart: cart)),
 
-                      child: CartSummary(cart: cart),
-                    ),
-
-                    const SizedBox(
-                      width: 16,
-                    ), // <--- إضافة مسافة بين الملخص والزر
-                    // 2. زر إتمام الطلب (يحتل مساحة أقل)
+                    const SizedBox(width: 16),
                     Expanded(
-                      flex: 4, // نمنحه وزن 4 (لأن زر الشراء مهم ويحتاج مساحة)
+                      flex: 4, //
 
                       child: AppPrimaryButton(
                         label: 'checkout'.tr(),

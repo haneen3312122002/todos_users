@@ -3,7 +3,7 @@ import '../constants/colors.dart';
 import 'text_styles.dart';
 
 class AppTheme {
-  //  Light Theme (الكود الحالي)
+  //  Light Theme
   static final ThemeData lightTheme = ThemeData(
     useMaterial3: true,
     // General Colors
@@ -100,19 +100,19 @@ class AppTheme {
     scaffoldBackgroundColor: AppColors.darkBackground,
     colorScheme: ColorScheme.fromSeed(
       seedColor: AppColors.primary,
-      brightness: Brightness.dark, // <--- هام: لتفعيل وضع Dark Mode
+      brightness: Brightness.dark,
       secondary: AppColors.secondary,
-      onSecondary: Colors.black, // النص على الثانوي يصبح داكن
+      onSecondary: Colors.black,
       error: AppColors.error,
-      surface: AppColors.darkSurface, // لون السطح الداكن (للكروت والحقول)
-      onSurface: AppColors.textDark, // النص على السطح الداكن (لون فاتح)
+      surface: AppColors.darkSurface,
+      onSurface: AppColors.textDark,
       background: AppColors.darkBackground,
       onBackground: AppColors.textDark,
     ),
 
     // AppBar Theme
     appBarTheme: AppBarTheme(
-      backgroundColor: AppColors.darkSurface, // لون داكن للسماح للخلفية بالظهور
+      backgroundColor: AppColors.darkSurface,
       foregroundColor: AppColors.textDark,
       elevation: 1,
       centerTitle: true,
@@ -126,15 +126,11 @@ class AppTheme {
     // Text Theme
     textTheme: AppTextStyles.textTheme,
 
-    // Elevated Button Theme (نفس الألوان الأساسية، فقط نغير لون الخلفية المعطلة)
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.primary,
-        foregroundColor:
-            AppColors.textDark, // النص على الزر الأساسي (أفتح من الأبيض النقي)
-        disabledBackgroundColor: AppColors.darkSurface.withOpacity(
-          0.5,
-        ), // لون عند تعطيل الزر
+        foregroundColor: AppColors.textDark,
+        disabledBackgroundColor: AppColors.darkSurface.withOpacity(0.5),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         textStyle: AppTextStyles.body.copyWith(
           fontWeight: FontWeight.bold,

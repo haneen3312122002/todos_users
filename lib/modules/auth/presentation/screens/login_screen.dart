@@ -9,7 +9,6 @@ import 'package:notes_tasks/core/widgets/loading_indicator.dart';
 import 'package:notes_tasks/core/widgets/error_view.dart';
 import 'package:notes_tasks/core/constants/spacing.dart';
 import 'package:notes_tasks/modules/auth/presentation/viewmodels/login_viewmodel.dart';
-import 'package:notes_tasks/modules/users/presentation/features/user_list/screens/users_list_screen.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -59,7 +58,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           ),
           SizedBox(height: AppSpacing.spaceLG),
 
-          // 🔘 Login Button
+          //  Login Button
           AppPrimaryButton(
             label: 'login'.tr(),
             isLoading: loginState.isLoading,
@@ -72,7 +71,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           ),
           SizedBox(height: AppSpacing.spaceLG),
 
-          // 🔁 State Handling (Data, Loading, Error)
+          //  State Handling (Data, Loading, Error)
           loginState.when(
             data: (auth) {
               if (auth == null) return const SizedBox();
