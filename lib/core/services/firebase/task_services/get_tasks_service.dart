@@ -10,7 +10,6 @@ class GetTasksService {
   Stream<List<TaskEntity>> streamTasks() {
     final u = auth.currentUser;
     if (u == null) {
-      // يُفضّل بدل الرمي إرجاع Stream.empty() حتى لا تكسر UI قبل Auth
       return const Stream.empty();
     }
     return db
@@ -25,7 +24,7 @@ class GetTasksService {
                 id: d.id, // ✔ String docId
                 todo: (m['title'] ?? '') as String,
                 completed: (m['done'] ?? false) as bool,
-                userId: u.uid, // لو بدّك uid كسلسلة؛ غيّر نوعه بالكيان
+                userId: u.uid, //
               );
             }).toList());
   }

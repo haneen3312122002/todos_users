@@ -17,7 +17,6 @@ class RegisterViewModel extends AsyncNotifier<fb.User?> {
     required String email,
     required String password,
   }) async {
-    // ✅ امنع تكرار الضغط أثناء التحميل
     if (state.isLoading) {
       debugPrint('[RegisterVM] Ignored duplicate register() while loading');
       return;
@@ -25,12 +24,10 @@ class RegisterViewModel extends AsyncNotifier<fb.User?> {
 
     debugPrint('[RegisterVM] Start register: email=$email');
 
-    // ✅ استخدم guard عشان أي خطأ يتحوّل AsyncError تلقائيًا
     state = const AsyncLoading();
     state = await AsyncValue.guard<fb.User?>(() async {
       final auth = ref.read(authServiceProvider);
 
-      // (اختياري) مهلة أمان لو الخدمة علّقت
       final cred = await auth
           .register(name: name, email: email, password: password)
           .timeout(const Duration(seconds: 20), onTimeout: () {

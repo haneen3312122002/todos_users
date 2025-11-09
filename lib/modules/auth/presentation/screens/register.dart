@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:notes_tasks/core/widgets/app_navbar_container.dart';
 import 'package:notes_tasks/core/widgets/app_scaffold.dart';
 import 'package:notes_tasks/core/widgets/app_text_link.dart';
 import 'package:notes_tasks/core/widgets/custom_text_field.dart';
@@ -62,9 +61,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           SizedBox(height: AppSpacing.spaceLG),
           AppPrimaryButton(
               label: 'register'.tr(),
-              isLoading: registerState.isLoading, // 🔄 اللودر فقط على الزر
+              isLoading: registerState.isLoading,
               onPressed: () async {
-                if (registerState.isLoading) return; // حماية إضافية
+                if (registerState.isLoading) return;
                 await registerNotifier.register(
                   name: nameController.text.trim(),
                   email: emailController.text.trim(),
@@ -84,14 +83,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             ),
           ),
           SizedBox(height: AppSpacing.spaceMD),
-
-          // ❌ لا تعرض لودر يملأ الشاشة؛ فقط أخطاء/نجاح بسيطين
           registerState.when(
             data: (user) {
               return const SizedBox();
             },
             error: (e, _) {
-              // خلي ErrorView + Snackbar لزيادة الوضوح
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('something_went_wrong'.tr())),

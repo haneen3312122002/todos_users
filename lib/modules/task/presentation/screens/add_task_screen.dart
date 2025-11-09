@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:notes_tasks/core/widgets/custom_text_field.dart';
 import 'package:notes_tasks/core/widgets/primary_button.dart';
 import 'package:notes_tasks/modules/task/presentation/viewmodels/firebase/add_task_viewmodel.dart';
-// ^ make sure this path matches where your VM lives
 
 class AddTaskScreen extends ConsumerStatefulWidget {
   const AddTaskScreen({super.key});
@@ -23,7 +22,6 @@ class _AddTaskScreenState extends ConsumerState<AddTaskScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // UI reads AsyncValue to show loading only; all logic is in the ViewModel.
     final state = ref.watch(addTaskViewModelProvider); // ✅ correct provider
     final vm = ref.read(addTaskViewModelProvider.notifier);
 
@@ -36,7 +34,6 @@ class _AddTaskScreenState extends ConsumerState<AddTaskScreen> {
           hint: 'Enter your task',
           inputAction: TextInputAction.done,
           onSubmitted: (_) {
-            // Forward raw input to the VM; VM handles validation/snackbar/pop.
             vm.submit(
               context,
               rawTitle: _titleController.text,
@@ -47,9 +44,9 @@ class _AddTaskScreenState extends ConsumerState<AddTaskScreen> {
         AppPrimaryButton(
           label: 'Add Task',
           icon: Icons.add,
-          isLoading: state.isLoading, // show loading on the button only
+          isLoading: state.isLoading, //
           onPressed: () {
-            if (state.isLoading) return; // prevent duplicate taps
+            if (state.isLoading) return; //
             vm.submit(
               context,
               rawTitle: _titleController.text,

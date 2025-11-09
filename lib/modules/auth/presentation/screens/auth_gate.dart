@@ -17,8 +17,6 @@ class AuthGate extends ConsumerWidget {
     final authAsync = ref.watch(authStateProvider);
 
     return authAsync.when(
-      // If we have a user, go to the main app container
-      // inside data: (user)
       data: (user) {
         if (user == null) return const LoginScreen();
         // Block unverified users
@@ -27,10 +25,7 @@ class AuthGate extends ConsumerWidget {
         }
         return const AppNavBarContainer();
       },
-
-      // Small loader while Firebase initializes/loads session
       loading: () => const LoadingIndicator(withBackground: true),
-      // Fallback on error → show login (and an error)
       error: (e, _) => Stack(
         children: [
           const LoginScreen(),

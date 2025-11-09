@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:notes_tasks/core/providers/firebase/firebase_providers.dart';
 
-// ✅ اسم مزوّد واضح ومميز لتتبّعه في اللوج
 final firebaseLoginVMProvider =
     AsyncNotifierProvider<FirebaseLoginViewModel, fb.User?>(
   FirebaseLoginViewModel.new,

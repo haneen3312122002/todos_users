@@ -12,14 +12,12 @@ import 'package:notes_tasks/core/widgets/app_list_tile.dart';
 import 'package:notes_tasks/modules/task/domain/entities/task_entity.dart';
 import 'package:notes_tasks/modules/task/presentation/screens/add_task_screen.dart';
 import 'package:notes_tasks/modules/task/presentation/viewmodels/firebase/tasks_viewmodel.dart';
-// ^ use the stream-based VM you created
 
 class TaskListScreen extends ConsumerWidget {
   const TaskListScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // UI reads AsyncValue only. All logic (fetch/refresh) lives in the ViewModel.
     final tasksState = ref.watch(tasksViewModelProvider);
     final vm = ref.read(tasksViewModelProvider.notifier);
 
@@ -30,17 +28,15 @@ class TaskListScreen extends ConsumerWidget {
       actions: [
         IconButton(
           icon: const Icon(Icons.refresh),
-          onPressed: vm.refresh, // delegate to VM (no logic here)
+          onPressed: vm.refresh, //
         ),
       ],
       body: tasksState.when(
-        // ✅ Data state: render list of tasks
         data: (List<TaskEntity> tasks) {
           if (tasks.isEmpty) {
             return EmptyView(message: 'no_tasks'.tr());
           }
 
-          // Use RefreshIndicator; ListView must be scrollable for pull-to-refresh.
           return RefreshIndicator(
             onRefresh:
                 vm.refresh, // VM decides how to refresh (no-op for streams)

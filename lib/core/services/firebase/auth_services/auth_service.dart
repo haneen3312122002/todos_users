@@ -49,7 +49,7 @@ class AuthService {
     }
   }
 
-  // ✅ Optionally: Check if email verified
+  //   Check if email verified
   Future<bool> checkEmailVerified() async {
     final user = auth.currentUser;
     if (user == null) return false;
