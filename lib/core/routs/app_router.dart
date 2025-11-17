@@ -2,6 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:notes_tasks/core/providers/firebase/auth/auth_state_provider.dart';
+import 'package:notes_tasks/core/routs/app_routes.dart';
 import 'package:notes_tasks/modules/auth/presentation/screens/login_screen.dart';
 import 'package:notes_tasks/modules/auth/presentation/screens/email_verfication.dart';
 import 'package:notes_tasks/core/widgets/app_navbar_container.dart';
@@ -16,40 +17,44 @@ final goRouterProvider = Provider<GoRouter>((ref) {
   final authAsync = ref.watch(authStateProvider);
 
   return GoRouter(
-    //loading
-    initialLocation: '/loading',
+    // loading
+    initialLocation: AppRoutes.loading,
 
     routes: [
-      //Loading
+      // Loading
       GoRoute(
-        path: '/loading',
+        path: AppRoutes.loading,
         builder: (context, state) =>
             const LoadingIndicator(withBackground: true),
       ),
 
-      //  Login
+      // Login
       GoRoute(
-        path: '/login',
+        path: AppRoutes.login,
         builder: (context, state) => const LoginScreen(),
       ),
 
-      //  Verify email
+      // Verify email
       GoRoute(
-        path: '/verify-email',
+        path: AppRoutes.verifyEmail,
         builder: (context, state) => const VerifyEmailScreen(),
       ),
 
-      //  Main app (AppNavBarContainer)
+      // Main app (AppNavBarContainer)
       GoRoute(
-        path: '/',
+        path: AppRoutes.home,
         builder: (context, state) => const AppNavBarContainer(),
       ),
+
+      // Reset password
       GoRoute(
-        path: '/reset-pass',
+        path: AppRoutes.resetPassword,
         builder: (context, state) => const ResetPasswordScreen(),
       ),
+
+      // User section details
       GoRoute(
-        path: '/user-section-details',
+        path: AppRoutes.userSectionDetails,
         builder: (context, state) {
           final args = state.extra as UserSectionDetailsArgs;
 
@@ -61,29 +66,30 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         },
       ),
 
+      // Register
       GoRoute(
-        path: '/register',
+        path: AppRoutes.register,
         builder: (context, state) => const RegisterScreen(),
       ),
     ],
 
     redirect: (context, state) {
-      // current state of the user:
-      final loc = state.fullPath;
+      // current location
+      final loc = state.fullPath; // e.g. '/login', '/', ...
 
-      final isOnLogin = loc == '/login';
-      final isOnVerifyEmail = loc == '/verify-email';
-      final isOnLoading = loc == '/loading';
+      final isOnLogin = loc == AppRoutes.login;
+      final isOnVerifyEmail = loc == AppRoutes.verifyEmail;
+      final isOnLoading = loc == AppRoutes.loading;
 
       // 1️ Loading state → always go to /loading
       if (authAsync.isLoading) {
-        if (!isOnLoading) return '/loading';
+        if (!isOnLoading) return AppRoutes.loading;
         return null;
       }
 
-      // 2️ Error state → show login (you can later pass error via extra/params)
+      // 2️ Error state → show login
       if (authAsync.hasError) {
-        if (!isOnLogin) return '/login';
+        if (!isOnLogin) return AppRoutes.login;
         return null;
       }
 
@@ -91,19 +97,19 @@ final goRouterProvider = Provider<GoRouter>((ref) {
 
       // 3️ Not logged in
       if (user == null) {
-        if (!isOnLogin) return '/login';
+        if (!isOnLogin) return AppRoutes.login;
         return null;
       }
 
-      // 4️ Logged in but email NOT verified → must go to /verify-email
+      // 4️ Logged in but email NOT verified
       if (!user.emailVerified) {
-        if (!isOnVerifyEmail) return '/verify-email';
+        if (!isOnVerifyEmail) return AppRoutes.verifyEmail;
         return null;
       }
 
       // 5️ Logged in + verified:
       if (isOnLogin || isOnVerifyEmail || isOnLoading) {
-        return '/';
+        return AppRoutes.home;
       }
 
       // otherwise, stay on current screen
