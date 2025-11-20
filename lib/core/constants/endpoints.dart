@@ -24,4 +24,5 @@ class AppEndpoints {
 
   //  Tasks
   static const String todos = '$baseUrl/todos';
+  static const String posts = '$baseUrl/posts';
 }

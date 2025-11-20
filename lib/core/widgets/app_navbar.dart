@@ -27,8 +27,8 @@ class AppNavBar extends StatelessWidget {
       ),
       items: const [
         BottomNavigationBarItem(
-          icon: Icon(Icons.checklist_rounded),
-          label: 'Tasks',
+          icon: Icon(Icons.home),
+          label: 'Posts',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.people_alt_rounded),

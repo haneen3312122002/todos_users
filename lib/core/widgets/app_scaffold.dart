@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:notes_tasks/core/constants/spacing.dart';
 import 'package:notes_tasks/core/providers/firebase/firebase_providers.dart';
 import 'package:notes_tasks/core/theme/viewmodels/theme_viewmodel.dart';
-import 'package:notes_tasks/modules/auth/presentation/screens/login_screen.dart'; // ✅ للانتقال بعد الخروج
 
 class AppScaffold extends ConsumerWidget {
   final String? title;
