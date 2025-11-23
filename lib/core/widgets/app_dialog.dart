@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../constants/colors.dart';
 import '../theme/text_styles.dart';
 import '../constants/spacing.dart';
+import 'animation/fade_in.dart';
 
 class AppDialog extends StatelessWidget {
   final String? title;
@@ -10,12 +11,15 @@ class AppDialog extends StatelessWidget {
   final double? width;
   final bool dismissible;
 
+  final bool animate;
+
   const AppDialog({
     super.key,
     this.title,
     required this.content,
     this.width,
     this.dismissible = true,
+    this.animate = true,
   });
 
   static Future<T?> show<T>({
@@ -24,6 +28,7 @@ class AppDialog extends StatelessWidget {
     required Widget content,
     bool dismissible = true,
     double? width,
+    bool animate = true,
   }) {
     return showDialog<T>(
       context: context,
@@ -33,6 +38,7 @@ class AppDialog extends StatelessWidget {
         content: content,
         width: width,
         dismissible: dismissible,
+        animate: animate,
       ),
     );
   }
@@ -41,7 +47,7 @@ class AppDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Dialog(
+    Widget dialogBody = Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       insetPadding: EdgeInsets.all(20.w),
       backgroundColor: theme.colorScheme.surface,
@@ -67,6 +73,25 @@ class AppDialog extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+
+    if (!animate) return dialogBody;
+
+    // Scale + Fade
+    return FadeIn(
+      duration: const Duration(milliseconds: 200),
+      child: TweenAnimationBuilder<double>(
+        duration: const Duration(milliseconds: 200),
+        tween: Tween(begin: 0.9, end: 1.0),
+        curve: Curves.easeOutBack,
+        builder: (context, scale, child) {
+          return Transform.scale(
+            scale: scale,
+            child: child,
+          );
+        },
+        child: dialogBody,
       ),
     );
   }

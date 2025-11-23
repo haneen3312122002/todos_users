@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'animation/fade_in.dart';
+import 'animation/slide_in.dart';
 
 class AppCustomTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -10,8 +12,14 @@ class AppCustomTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final String? Function(String?)? validator;
 
-  /// 👇 الإضافة الجديدة:
+  /// Called when user submits from keyboard.
   final void Function(String)? onSubmitted;
+
+  /// Animate field when it appears (e.g. in forms).
+  final bool animate;
+  final Duration animationDuration;
+  final Duration? delay;
+  final Offset slideFrom;
 
   const AppCustomTextField({
     super.key,
@@ -23,22 +31,38 @@ class AppCustomTextField extends StatelessWidget {
     this.inputAction,
     this.keyboardType,
     this.validator,
-    this.onSubmitted, // 👈 الإضافة الجديدة
+    this.onSubmitted,
+    this.animate = true,
+    this.animationDuration = const Duration(milliseconds: 220),
+    this.delay,
+    this.slideFrom = const Offset(0, 8),
   });
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
+    Widget field = TextFormField(
       controller: controller,
       obscureText: obscureText,
       maxLines: maxLines,
       textInputAction: inputAction,
       keyboardType: keyboardType,
       validator: validator,
-      onFieldSubmitted: onSubmitted, // 👈 استخدمها هنا
+      onFieldSubmitted: onSubmitted,
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
+      ),
+    );
+
+    if (!animate) return field;
+
+    return FadeIn(
+      duration: animationDuration,
+      delay: delay,
+      child: SlideIn(
+        from: slideFrom,
+        duration: animationDuration,
+        child: field,
       ),
     );
   }

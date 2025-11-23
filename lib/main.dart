@@ -5,10 +5,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:notes_tasks/core/routs/app_router.dart';
 import 'package:notes_tasks/core/services/firebase/firebase_initializer.dart';
 
-import 'firebase_options.dart';
 import 'package:notes_tasks/core/theme/app_theme.dart';
 import 'package:notes_tasks/core/theme/viewmodels/theme_viewmodel.dart';
-import 'package:notes_tasks/modules/auth/presentation/screens/login_screen.dart';
+import 'package:notes_tasks/core/widgets/animation/fade_in.dart';
+import 'package:notes_tasks/core/widgets/animation/slide_in.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -49,6 +49,18 @@ class MyApp extends ConsumerWidget {
           localizationsDelegates: context.localizationDelegates,
           supportedLocales: context.supportedLocales,
           locale: context.locale,
+          builder: (context, routerChild) {
+            final child = routerChild ?? const SizedBox.shrink();
+
+            return FadeIn(
+              duration: const Duration(milliseconds: 250),
+              child: SlideIn(
+                from: const Offset(0, 20),
+                duration: const Duration(milliseconds: 250),
+                child: child,
+              ),
+            );
+          },
         );
       },
     );

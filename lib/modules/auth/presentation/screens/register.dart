@@ -76,7 +76,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             child: AppTextLink(
               textKey: 'back_to_login',
               onPressed: () {
-                context.pushReplacement('login');
+                context.pushReplacement('/login');
               },
             ),
           ),

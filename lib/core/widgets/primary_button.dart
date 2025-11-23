@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../theme/text_styles.dart';
+import 'animation/fade_in.dart';
+import 'animation/slide_in.dart';
 
 class AppPrimaryButton extends StatelessWidget {
   final String label;
@@ -8,21 +10,30 @@ class AppPrimaryButton extends StatelessWidget {
   final bool isLoading;
   final IconData? icon;
 
+  /// Animate button on build.
+  final bool animate;
+  final Duration animationDuration;
+  final Offset slideFrom;
+  final Duration? delay;
+
   const AppPrimaryButton({
     super.key,
     required this.label,
     required this.onPressed,
     this.isLoading = false,
     this.icon,
+    this.animate = true,
+    this.animationDuration = const Duration(milliseconds: 220),
+    this.slideFrom = const Offset(0, 8),
+    this.delay,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return ElevatedButton(
-      style: Theme.of(context).elevatedButtonTheme.style,
-
+    Widget button = ElevatedButton(
+      style: theme.elevatedButtonTheme.style,
       onPressed: isLoading ? null : onPressed,
       child: isLoading
           ? SizedBox(
@@ -34,16 +45,31 @@ class AppPrimaryButton extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (icon != null) ...[Icon(icon), SizedBox(width: 8.w)],
+                if (icon != null) ...[
+                  Icon(icon),
+                  SizedBox(width: 8.w),
+                ],
                 Text(
                   label,
                   style: AppTextStyles.body.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.onPrimary,
+                    color: theme.colorScheme.onPrimary,
                   ),
                 ),
               ],
             ),
+    );
+
+    if (!animate) return button;
+
+    return FadeIn(
+      duration: animationDuration,
+      delay: delay,
+      child: SlideIn(
+        from: slideFrom,
+        duration: animationDuration,
+        child: button,
+      ),
     );
   }
 }

@@ -5,19 +5,23 @@ import '../constants/colors.dart';
 import '../constants/spacing.dart';
 import '../theme/text_styles.dart';
 import 'primary_button.dart';
+import 'animation/fade_in.dart';
+import 'animation/slide_in.dart';
 
 class ErrorView extends StatelessWidget {
   final String? message;
-
   final VoidCallback? onRetry;
-
   final bool fullScreen;
+
+  /// Animate error view appearance.
+  final bool animate;
 
   const ErrorView({
     super.key,
     this.message,
     this.onRetry,
     this.fullScreen = true,
+    this.animate = true,
   });
 
   @override
@@ -47,13 +51,27 @@ class ErrorView extends StatelessWidget {
       ],
     );
 
-    return fullScreen
+    Widget view = fullScreen
         ? Center(
             child: Padding(
               padding: EdgeInsets.all(AppSpacing.screenHorizontal),
               child: content,
             ),
           )
-        : Padding(padding: EdgeInsets.all(AppSpacing.spaceMD), child: content);
+        : Padding(
+            padding: EdgeInsets.all(AppSpacing.spaceMD),
+            child: content,
+          );
+
+    if (!animate) return view;
+
+    return FadeIn(
+      duration: const Duration(milliseconds: 220),
+      child: SlideIn(
+        from: const Offset(0, 10),
+        duration: const Duration(milliseconds: 220),
+        child: view,
+      ),
+    );
   }
 }

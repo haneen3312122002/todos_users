@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import '../constants/colors.dart';
 import '../theme/text_styles.dart';
+import 'animation/fade_in.dart';
+import 'animation/slide_in.dart';
 
-/// مكوّن تفاعلي قابل للضغط، يمكن استخدامه داخل أو خارج الكارد.
-/// مسؤول عن التفاعل (onTap) والعرض المنسق للنصوص والأيقونات.
 class AppListTile extends StatelessWidget {
   final Widget? leading;
   final String title;
@@ -11,6 +11,10 @@ class AppListTile extends StatelessWidget {
   final Widget? trailing;
   final VoidCallback? onTap;
   final Color? tileColor;
+
+  final bool animate;
+  final Duration animationDuration;
+  final Offset slideFrom;
 
   const AppListTile({
     super.key,
@@ -20,20 +24,22 @@ class AppListTile extends StatelessWidget {
     this.trailing,
     this.onTap,
     this.tileColor,
+    this.animate = true,
+    this.animationDuration = const Duration(milliseconds: 200),
+    this.slideFrom = const Offset(0, 5),
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return ListTile(
+    Widget tile = ListTile(
       leading: leading,
       title: Text(
         title,
         style: AppTextStyles.body.copyWith(
           fontWeight: FontWeight.w600,
-          color:
-              theme.listTileTheme.titleTextStyle?.color ??
+          color: theme.listTileTheme.titleTextStyle?.color ??
               AppColors.textPrimary,
         ),
       ),
@@ -41,8 +47,7 @@ class AppListTile extends StatelessWidget {
           ? Text(
               subtitle!,
               style: AppTextStyles.caption.copyWith(
-                color:
-                    theme.listTileTheme.subtitleTextStyle?.color ??
+                color: theme.listTileTheme.subtitleTextStyle?.color ??
                     AppColors.textPrimary,
               ),
             )
@@ -52,7 +57,18 @@ class AppListTile extends StatelessWidget {
       shape: theme.listTileTheme.shape,
       contentPadding: theme.listTileTheme.contentPadding,
       iconColor: theme.listTileTheme.iconColor,
-      onTap: onTap, // ✅ التفاعل موجود هنا فقط
+      onTap: onTap,
+    );
+
+    if (!animate) return tile;
+
+    return FadeIn(
+      duration: animationDuration,
+      child: SlideIn(
+        from: slideFrom,
+        duration: animationDuration,
+        child: tile,
+      ),
     );
   }
 }

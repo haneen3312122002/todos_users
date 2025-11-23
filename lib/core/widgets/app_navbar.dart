@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notes_tasks/core/widgets/animation/animated_nav_icon.dart';
 
 class AppNavBar extends StatelessWidget {
   final int currentIndex;
@@ -25,21 +26,40 @@ class AppNavBar extends StatelessWidget {
       unselectedLabelStyle: theme.textTheme.bodySmall?.copyWith(
         color: theme.colorScheme.outline,
       ),
-      items: const [
+      items: [
         BottomNavigationBarItem(
-          icon: Icon(Icons.home),
+          icon: AnimatedNavIcon(
+            icon: Icons.home,
+            isActive: currentIndex == 0,
+          ),
           label: 'Posts',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.people_alt_rounded),
+          icon: AnimatedNavIcon(
+            icon: Icons.post_add,
+            isActive: currentIndex == 1,
+          ),
+          label: 'Posts',
+        ),
+        BottomNavigationBarItem(
+          icon: AnimatedNavIcon(
+            icon: Icons.people_alt_rounded,
+            isActive: currentIndex == 2,
+          ),
           label: 'Users',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.shopping_basket_outlined),
+          icon: AnimatedNavIcon(
+            icon: Icons.shopping_basket_outlined,
+            isActive: currentIndex == 3,
+          ),
           label: 'Carts',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.person),
+          icon: AnimatedNavIcon(
+            icon: Icons.person,
+            isActive: currentIndex == 4,
+          ),
           label: 'My Profile',
         ),
       ],

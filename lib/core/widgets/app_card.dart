@@ -1,19 +1,30 @@
 import 'package:flutter/material.dart';
 import '../constants/spacing.dart';
+import 'animation/fade_in.dart';
+import 'animation/slide_in.dart';
 
-/// مكوّن عرضي فقط (Presentation Widget)
-/// مسؤول فقط عن الشكل العام للكارد دون أي تفاعل.
 class AppCard extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry? padding;
 
-  const AppCard({super.key, required this.child, this.padding});
+  final bool animate;
+  final Duration animationDuration;
+  final Offset slideFrom; // e.g. Offset(0, 10) → from bottom
+
+  const AppCard({
+    super.key,
+    required this.child,
+    this.padding,
+    this.animate = true,
+    this.animationDuration = const Duration(milliseconds: 250),
+    this.slideFrom = const Offset(0, 10),
+  });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Card(
+    Widget content = Card(
       elevation: theme.cardTheme.elevation,
       margin: theme.cardTheme.margin,
       color: theme.cardTheme.color,
@@ -22,6 +33,17 @@ class AppCard extends StatelessWidget {
       child: Padding(
         padding: padding ?? EdgeInsets.all(AppSpacing.sectionPadding),
         child: child,
+      ),
+    );
+
+    if (!animate) return content;
+
+    return FadeIn(
+      duration: animationDuration,
+      child: SlideIn(
+        from: slideFrom,
+        duration: animationDuration,
+        child: content,
       ),
     );
   }

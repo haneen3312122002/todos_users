@@ -17,103 +17,107 @@ final goRouterProvider = Provider<GoRouter>((ref) {
   final authAsync = ref.watch(authStateProvider);
 
   return GoRouter(
-    // loading
-    initialLocation: AppRoutes.loading,
+      // loading
+      initialLocation: AppRoutes.loading,
+      routes: [
+        // Loading
+        GoRoute(
+          path: AppRoutes.loading,
+          builder: (context, state) =>
+              const LoadingIndicator(withBackground: true),
+        ),
 
-    routes: [
-      // Loading
-      GoRoute(
-        path: AppRoutes.loading,
-        builder: (context, state) =>
-            const LoadingIndicator(withBackground: true),
-      ),
+        // Login
+        GoRoute(
+          path: AppRoutes.login,
+          builder: (context, state) => const LoginScreen(),
+        ),
 
-      // Login
-      GoRoute(
-        path: AppRoutes.login,
-        builder: (context, state) => const LoginScreen(),
-      ),
+        // Verify email
+        GoRoute(
+          path: AppRoutes.verifyEmail,
+          builder: (context, state) => const VerifyEmailScreen(),
+        ),
 
-      // Verify email
-      GoRoute(
-        path: AppRoutes.verifyEmail,
-        builder: (context, state) => const VerifyEmailScreen(),
-      ),
+        // Main app (AppNavBarContainer)
+        GoRoute(
+          path: AppRoutes.home,
+          builder: (context, state) => const AppNavBarContainer(),
+        ),
 
-      // Main app (AppNavBarContainer)
-      GoRoute(
-        path: AppRoutes.home,
-        builder: (context, state) => const AppNavBarContainer(),
-      ),
+        // Reset password
+        GoRoute(
+          path: AppRoutes.resetPassword,
+          builder: (context, state) => const ResetPasswordScreen(),
+        ),
 
-      // Reset password
-      GoRoute(
-        path: AppRoutes.resetPassword,
-        builder: (context, state) => const ResetPasswordScreen(),
-      ),
+        // User section details
+        GoRoute(
+          path: AppRoutes.userSectionDetails,
+          builder: (context, state) {
+            final args = state.extra as UserSectionDetailsArgs;
 
-      // User section details
-      GoRoute(
-        path: AppRoutes.userSectionDetails,
-        builder: (context, state) {
-          final args = state.extra as UserSectionDetailsArgs;
+            return UserSectionDetailsView<AddressEntity>(
+              title: args.title,
+              provider: args.provider,
+              mapper: args.mapper,
+            );
+          },
+        ),
 
-          return UserSectionDetailsView<AddressEntity>(
-            title: args.title,
-            provider: args.provider,
-            mapper: args.mapper,
-          );
-        },
-      ),
+        // Register
+        GoRoute(
+          path: AppRoutes.register,
+          builder: (context, state) => const RegisterScreen(),
+        ),
+      ],
+      redirect: (context, state) {
+        final loc = state.fullPath ?? state.uri.toString();
 
-      // Register
-      GoRoute(
-        path: AppRoutes.register,
-        builder: (context, state) => const RegisterScreen(),
-      ),
-    ],
+        final isOnLoading = loc == AppRoutes.loading;
+        final isOnLogin = loc == AppRoutes.login;
+        final isOnRegister = loc == AppRoutes.register;
+        final isOnResetPassword = loc == AppRoutes.resetPassword;
+        final isOnVerifyEmail = loc == AppRoutes.verifyEmail;
 
-    redirect: (context, state) {
-      // current location
-      final loc = state.fullPath; // e.g. '/login', '/', ...
+        // 1) While auth is loading → always show loading
+        if (authAsync.isLoading) {
+          if (!isOnLoading) return AppRoutes.loading;
+          return null;
+        }
 
-      final isOnLogin = loc == AppRoutes.login;
-      final isOnVerifyEmail = loc == AppRoutes.verifyEmail;
-      final isOnLoading = loc == AppRoutes.loading;
+        // 2) Error in auth state → go to login
+        if (authAsync.hasError) {
+          if (!isOnLogin) return AppRoutes.login;
+          return null;
+        }
 
-      // 1️ Loading state → always go to /loading
-      if (authAsync.isLoading) {
-        if (!isOnLoading) return AppRoutes.loading;
+        final user = authAsync.value; // Firebase User?
+
+        // 3) Not logged in:
+        if (user == null) {
+          // allow public auth routes:
+          if (isOnLogin || isOnRegister || isOnResetPassword) {
+            return null; // stay where you are
+          }
+
+          // any other route → redirect to login
+          return AppRoutes.login;
+        }
+
+        // 4) Logged in but email *not* verified
+        if (!user.emailVerified) {
+          if (!isOnVerifyEmail) return AppRoutes.verifyEmail;
+          return null;
+        }
+
+        // 5) Logged in + verified:
+        // If user is still on auth screens → send to home
+        if (isOnLogin || isOnRegister || isOnResetPassword || isOnLoading) {
+          return AppRoutes.home;
+        }
+
+        // 6) Otherwise, stay where you are
         return null;
-      }
-
-      // 2️ Error state → show login
-      if (authAsync.hasError) {
-        if (!isOnLogin) return AppRoutes.login;
-        return null;
-      }
-
-      final user = authAsync.value; // User? from Firebase
-
-      // 3️ Not logged in
-      if (user == null) {
-        if (!isOnLogin) return AppRoutes.login;
-        return null;
-      }
-
-      // 4️ Logged in but email NOT verified
-      if (!user.emailVerified) {
-        if (!isOnVerifyEmail) return AppRoutes.verifyEmail;
-        return null;
-      }
-
-      // 5️ Logged in + verified:
-      if (isOnLogin || isOnVerifyEmail || isOnLoading) {
-        return AppRoutes.home;
-      }
-
-      // otherwise, stay on current screen
-      return null;
-    },
-  );
+      });
 });

@@ -1,16 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:notes_tasks/core/widgets/animation/fade_in.dart';
 
-/// A reusable text-only button (link-style) with optional icons.
-/// - Localizes the label using EasyLocalization.
-/// - Underlined by default to look like a link.
-/// - Center-aligned by default.
-///
-/// Usage:
-/// AppTextLink(
-///   textKey: 'create_account',
-///   onPressed: () { /* navigate */ },
-/// )
 class AppTextLink extends StatelessWidget {
   final String textKey; // localization key
   final VoidCallback onPressed;
@@ -65,7 +56,7 @@ class AppTextLink extends StatelessWidget {
       child: TextButton(
         onPressed: onPressed,
         style: TextButton.styleFrom(padding: padding),
-        child: content,
+        child: FadeIn(child: content),
       ),
     );
   }
