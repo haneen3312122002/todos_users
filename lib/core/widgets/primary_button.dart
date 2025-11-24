@@ -10,7 +10,6 @@ class AppPrimaryButton extends StatelessWidget {
   final bool isLoading;
   final IconData? icon;
 
-  /// Animate button on build.
   final bool animate;
   final Duration animationDuration;
   final Offset slideFrom;

@@ -9,7 +9,7 @@ class AppCard extends StatelessWidget {
 
   final bool animate;
   final Duration animationDuration;
-  final Offset slideFrom; // e.g. Offset(0, 10) → from bottom
+  final Offset slideFrom;
 
   const AppCard({
     super.key,

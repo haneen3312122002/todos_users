@@ -12,7 +12,7 @@ class AnimatedNavIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedScale(
-      scale: isActive ? 1.2 : 1.0, // تكبير بسيط عند التحديد
+      scale: isActive ? 1.2 : 1.0, //
       duration: const Duration(milliseconds: 200),
       curve: Curves.easeOut,
       child: Icon(icon),

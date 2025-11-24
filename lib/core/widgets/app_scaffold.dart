@@ -26,8 +26,7 @@ class AppScaffold extends ConsumerWidget {
     this.bottomNavBar,
     this.showLogout = false, // افتراضياً غير مفعلة
     this.onLogout,
-    required List<IconButton>
-        actions, // هذا مش مستخدم فعلياً بس نتركه لتوافق الكود
+    required List<IconButton> actions,
   });
 
   @override

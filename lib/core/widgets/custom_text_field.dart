@@ -12,10 +12,10 @@ class AppCustomTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final String? Function(String?)? validator;
 
-  /// Called when user submits from keyboard.
+  // when user submits from keyboard.
   final void Function(String)? onSubmitted;
 
-  /// Animate field when it appears (e.g. in forms).
+  // Animate field when it appears
   final bool animate;
   final Duration animationDuration;
   final Duration? delay;
