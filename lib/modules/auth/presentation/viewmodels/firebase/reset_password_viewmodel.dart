@@ -1,16 +1,8 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:firebase_auth/firebase_auth.dart' as fb;
-import 'package:notes_tasks/core/providers/firebase/firebase_providers.dart';
-
-class ResetPasswordFailure implements Exception {
-  final String messageKey;
-  const ResetPasswordFailure(this.messageKey);
-
-  @override
-  String toString() => 'ResetPasswordFailure($messageKey)';
-}
+import 'package:notes_tasks/modules/auth/domain/failures/auth_failure.dart';
+import 'package:notes_tasks/modules/auth/domain/usecases/send_reset_password_email_usecase.dart';
+import 'package:notes_tasks/modules/auth/domain/validators/auth_validators.dart';
 
 final resetPasswordViewModelProvider =
     AsyncNotifierProvider<ResetPasswordViewModel, void>(
@@ -27,68 +19,27 @@ class ResetPasswordViewModel extends AsyncNotifier<void> {
     required String email,
   }) async {
     if (state.isLoading) {
-      debugPrint(
-          '[ResetPasswordVM] Ignored duplicate sendResetEmail() while loading');
       return;
     }
-
-    debugPrint('[ResetPasswordVM] Start sendResetEmail: email=$email');
-
-    if (email.isEmpty) {
-      debugPrint('[ResetPasswordVM] Validation failed: empty email');
+    final validationKey = AuthValidators.validateEmail(email);
+    if (validationKey != null) {
       state = AsyncError(
-        const ResetPasswordFailure('please_enter_email'),
-        StackTrace.current,
+        AuthFailure(validationKey),
+        StackTrace.empty, // ✅ لا نضلل الستاك تريس
       );
       return;
     }
-
     state = const AsyncLoading();
-
+    final usecase = ref.read(sendResetPasswordEmailUseCaseProvider);
     try {
-      final fb.FirebaseAuth auth = ref.read(firebaseAuthProvider);
-
-      await auth
-          .sendPasswordResetEmail(email: email)
-          .timeout(const Duration(seconds: 20), onTimeout: () {
-        throw TimeoutException('sendPasswordResetEmail() timed out after 20s');
-      });
-
-      debugPrint('[ResetPasswordVM] sendResetEmail() completed for $email');
-
+      await usecase(email: email.trim());
       state = const AsyncData(null);
-    } on fb.FirebaseAuthException catch (e, st) {
-      debugPrint(
-          '[ResetPasswordVM] FirebaseAuthException: ${e.code} - ${e.message}');
-      final messageKey = _mapFirebaseErrorToMessageKey(e);
-      state = AsyncError(ResetPasswordFailure(messageKey), st);
-    } on TimeoutException catch (e, st) {
-      debugPrint('[ResetPasswordVM] TimeoutException: ${e.message}');
-      state = const AsyncError(
-        ResetPasswordFailure('request_timeout'),
-        StackTrace.empty,
-      );
+    } on AuthFailure catch (e, st) {
+      // ✅ Failure جاهز برسالة messageKey
+      state = AsyncError(e, st);
     } catch (e, st) {
-      debugPrint('[ResetPasswordVM] Unknown error: $e');
-      state = const AsyncError(
-        ResetPasswordFailure('something_went_wrong'),
-        StackTrace.empty,
-      );
-    }
-  }
-
-  String _mapFirebaseErrorToMessageKey(fb.FirebaseAuthException e) {
-    switch (e.code) {
-      case 'user-not-found':
-        return 'user_not_found';
-      case 'invalid-email':
-        return 'invalid_email';
-      case 'missing-email':
-        return 'please_enter_email';
-      case 'network-request-failed':
-        return 'network_error';
-      default:
-        return 'something_went_wrong';
+      // ✅ خطأ عام برسالة موحدة + stacktrace الصحيح
+      state = AsyncError(const AuthFailure('something_went_wrong'), st);
     }
   }
 }

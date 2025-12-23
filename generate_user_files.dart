@@ -1,6 +1,6 @@
 import 'dart:io';
 
-/// ⚡ يزيل كل التعليقات من ملفات .dart (// أو /* */)
+
 void main() async {
   final dir = Directory('lib');
 

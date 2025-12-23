@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:go_router/go_router.dart';
-import 'package:notes_tasks/core/widgets/app_card.dart';
-import 'package:notes_tasks/core/widgets/app_list_tile.dart';
-import 'package:notes_tasks/core/widgets/app_scaffold.dart';
+import 'package:notes_tasks/core/shared/widgets/cards/app_card.dart';
+import 'package:notes_tasks/core/shared/widgets/lists/app_list_tile.dart';
+import 'package:notes_tasks/core/shared/widgets/common/app_scaffold.dart';
 import 'package:notes_tasks/modules/users/domain/entities/user_entity.dart';
 import 'package:notes_tasks/modules/users/presentation/features/user_details/screens/user_section_details_view.dart';
 import 'package:notes_tasks/modules/users/presentation/features/user_details/user_section_details_args.dart';
@@ -48,7 +48,7 @@ class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> {
         children: [
           const SizedBox(height: 12),
 
-          // 🏠 Address
+
           AppCard(
             child: AppListTile(
               leading: const Icon(Icons.home_outlined),
@@ -70,7 +70,7 @@ class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> {
             ),
           ),
 
-          // 💳 Bank
+
           AppCard(
             child: AppListTile(
               leading: const Icon(Icons.credit_card_outlined),
@@ -94,7 +94,7 @@ class _UserDetailsScreenState extends ConsumerState<UserDetailsScreen> {
             ),
           ),
 
-          // 🏢 Company
+
           AppCard(
             child: AppListTile(
               leading: const Icon(Icons.business_outlined),

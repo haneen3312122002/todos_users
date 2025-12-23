@@ -1,19 +1,21 @@
-import 'package:firebase_auth/firebase_auth.dart' as fb;
+//listener: if we want only to do side effects bassed on something(show: snackbar/dialog)
+//state.when:if we will show UIs bassed on something(dtat,liading indecator/ error view/ empty view)
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:go_router/go_router.dart';
-import 'package:notes_tasks/core/widgets/animation/fade_in.dart';
-import 'package:notes_tasks/core/widgets/animation/slide_in.dart';
-import 'package:notes_tasks/core/widgets/app_scaffold.dart';
-import 'package:notes_tasks/core/widgets/app_text_link.dart';
-import 'package:notes_tasks/core/widgets/custom_text_field.dart';
-import 'package:notes_tasks/core/widgets/primary_button.dart';
-import 'package:notes_tasks/core/widgets/loading_indicator.dart';
-import 'package:notes_tasks/core/widgets/error_view.dart';
-import 'package:notes_tasks/core/constants/spacing.dart';
+import 'package:notes_tasks/core/shared/widgets/animation/fade_in.dart';
+import 'package:notes_tasks/core/shared/widgets/animation/slide_in.dart';
+import 'package:notes_tasks/core/shared/widgets/common/app_scaffold.dart';
+import 'package:notes_tasks/core/shared/widgets/common/app_snackbar.dart';
+import 'package:notes_tasks/core/shared/widgets/texts/app_text_link.dart';
+import 'package:notes_tasks/core/shared/widgets/fields/custom_text_field.dart';
+import 'package:notes_tasks/core/shared/widgets/buttons/primary_button.dart';
+import 'package:notes_tasks/core/shared/constants/spacing.dart';
+import 'package:notes_tasks/modules/auth/domain/failures/auth_failure.dart';
 import 'package:notes_tasks/modules/auth/presentation/viewmodels/firebase/login_firebase_viewmodel.dart';
 
+// why no depends on firebase b user? -> no care about the user, only care about the success/ failure
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
   @override
@@ -24,23 +26,62 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
+  late final ProviderSubscription _loginSub;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _loginSub = ref.listenManual(firebaseLoginVMProvider, (prev, next) {
+      //prev: prev provider state and next: the new state
+      // ✅ listener = side effects
+      next.whenOrNull(
+        //no need for all:(data,error,loading)
+        data: (_) {
+          //if the page not on the screen:
+          if (!mounted) return; //mounted: the widget still on the screen
+
+          // أنظف مع go_router من pushReplacement
+          context.go('/');
+        },
+        error: (e, _) {
+          final key =
+              (e is AuthFailure) ? e.messageKey : 'something_went_wrong';
+
+          AppSnackbar.show(context, key.tr());
+        },
+      );
+    });
+  }
+
   @override
   void dispose() {
+    _loginSub.close();
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
   }
 
+  Future<void> submitLogin() async {
+    final state = ref.read(firebaseLoginVMProvider);
+    if (state.isLoading) return;
+
+    FocusScope.of(context).unfocus();
+
+    await ref.read(firebaseLoginVMProvider.notifier).login(
+          email: emailController.text.trim(),
+          password: passwordController.text.trim(),
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
     final loginState = ref.watch(firebaseLoginVMProvider);
-    final loginNotifier = ref.read(firebaseLoginVMProvider.notifier);
 
     return AppScaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          //from up to down:
           FadeIn(
             child: SlideIn(
               from: const Offset(0, -20),
@@ -61,25 +102,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 label: 'password'.tr(),
                 obscureText: true,
                 inputAction: TextInputAction.done,
-                onSubmitted: (_) async {
-                  debugPrint('[UI] onSubmitted -> call VM');
-                  await loginNotifier.login(
-                    email: emailController.text.trim(),
-                    password: passwordController.text.trim(),
-                  );
-                },
+                onSubmitted: (_) => submitLogin(), // ✅ نفس المسار
               ),
             ),
           ),
-
           SizedBox(height: AppSpacing.spaceSM),
           FadeIn(
             delay: const Duration(milliseconds: 200),
             child: AppTextLink(
               textKey: 'forget password?',
-              onPressed: () {
-                context.push('/reset-pass');
-              },
+              onPressed: () => context.push('/reset-pass'),
             ),
           ),
           SizedBox(height: AppSpacing.spaceLG),
@@ -87,44 +119,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             delay: const Duration(milliseconds: 250),
             child: AppPrimaryButton(
               label: 'login'.tr(),
-              isLoading: loginState.isLoading,
-              onPressed: () async {
-                debugPrint('[UI] login button tapped -> call VM');
-                await loginNotifier.login(
-                  email: emailController.text.trim(),
-                  password: passwordController.text.trim(),
-                );
-                debugPrint(
-                  '[UI] after VM call, currentUser=${fb.FirebaseAuth.instance.currentUser?.uid}',
-                );
-              },
+              isLoading: loginState.isLoading, // ✅ UI فقط
+              onPressed: submitLogin, // ✅ نفس المسار
             ),
           ),
           SizedBox(height: AppSpacing.spaceLG),
           Center(
             child: AppTextLink(
               textKey: 'create_account',
-              onPressed: () {
-                context.pushReplacement('/register');
-              },
+              onPressed: () => context.pushReplacement('/register'),
             ),
-          ),
-          loginState.when(
-            data: (user) {
-              if (user == null) return const SizedBox();
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                context.pushReplacement('/');
-              });
-              return const SizedBox();
-            },
-            loading: () => const LoadingIndicator(withBackground: false),
-            error: (e, _) {
-              String msg = 'something_went_wrong'.tr();
-              if (e is fb.FirebaseAuthException) {
-                msg = '${e.code}: ${e.message ?? ''}';
-              }
-              return FadeIn(child: ErrorView(message: msg, fullScreen: false));
-            },
           ),
         ],
       ),

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:notes_tasks/core/constants/colors.dart';
-import 'package:notes_tasks/core/constants/spacing.dart';
-import 'package:notes_tasks/core/theme/text_styles.dart';
-import 'package:notes_tasks/core/widgets/app_card.dart';
-import 'package:notes_tasks/core/widgets/app_list_tile.dart';
+import 'package:notes_tasks/core/shared/constants/colors.dart';
+import 'package:notes_tasks/core/shared/constants/spacing.dart';
+import 'package:notes_tasks/core/app/theme/text_styles.dart';
+import 'package:notes_tasks/core/shared/widgets/cards/app_card.dart';
+import 'package:notes_tasks/core/shared/widgets/lists/app_list_tile.dart';
 import 'package:notes_tasks/modules/users/domain/entities/user_entity.dart';
 import 'package:notes_tasks/modules/users/presentation/features/user_details/providers/ui_providers/expanded_user_provider.dart';
 import 'package:notes_tasks/modules/users/presentation/features/user_details/screens/user_details_screen.dart';
@@ -53,7 +53,6 @@ class UserItem extends ConsumerWidget {
               },
             ),
           ),
-
           if (isExpanded)
             Padding(
               padding: EdgeInsets.symmetric(

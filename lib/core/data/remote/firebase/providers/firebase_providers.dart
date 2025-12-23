@@ -1,0 +1,23 @@
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:notes_tasks/core/features/auth/services/auth_service.dart';
+
+
+final firebaseAuthProvider =
+    Provider<fb.FirebaseAuth>((_) => fb.FirebaseAuth.instance);
+
+final firebaseFirestoreProvider =
+    Provider<FirebaseFirestore>((_) => FirebaseFirestore.instance);
+
+final authServiceProvider = Provider<AuthService>((ref) {
+  return AuthService(
+    auth: ref.read(firebaseAuthProvider),
+    db: ref.read(firebaseFirestoreProvider),
+  );
+});
+
+final firebaseStorageProvider = Provider<FirebaseStorage>((ref) {
+  return FirebaseStorage.instance;
+});

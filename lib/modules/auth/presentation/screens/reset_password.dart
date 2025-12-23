@@ -1,17 +1,15 @@
-import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:notes_tasks/core/widgets/app_scaffold.dart';
-import 'package:notes_tasks/core/widgets/custom_text_field.dart';
-import 'package:notes_tasks/core/widgets/primary_button.dart';
-import 'package:notes_tasks/core/widgets/loading_indicator.dart';
-import 'package:notes_tasks/core/widgets/error_view.dart';
-import 'package:notes_tasks/core/widgets/app_text_link.dart';
-import 'package:notes_tasks/core/constants/spacing.dart';
-import 'package:notes_tasks/modules/auth/presentation/screens/login_screen.dart';
+import 'package:notes_tasks/core/shared/widgets/common/app_scaffold.dart';
+import 'package:notes_tasks/core/shared/widgets/common/app_snackbar.dart';
+import 'package:notes_tasks/core/shared/widgets/fields/custom_text_field.dart';
+import 'package:notes_tasks/core/shared/widgets/buttons/primary_button.dart';
+import 'package:notes_tasks/core/shared/widgets/texts/app_text_link.dart';
+import 'package:notes_tasks/core/shared/constants/spacing.dart';
+import 'package:notes_tasks/modules/auth/domain/failures/auth_failure.dart';
 
 import 'package:notes_tasks/modules/auth/presentation/viewmodels/firebase/reset_password_viewmodel.dart';
 
@@ -25,27 +23,38 @@ class ResetPasswordScreen extends ConsumerStatefulWidget {
 
 class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
   final emailController = TextEditingController();
+  late final ProviderSubscription _resetSub;
+  @override
+  void initState() {
+    super.initState();
+    _resetSub = ref.listenManual(resetPasswordViewModelProvider, (prev, next) {
+      next.whenOrNull(data: (_) {
+        if (!mounted) return;
+        AppSnackbar.show(context, 'reset_email_sent'.tr());
+      }, error: (e, _) {
+        if (!mounted) return;
+        final msg = (e is AuthFailure)
+            ? e.messageKey.tr()
+            : 'something_went_wrong'.tr();
+
+        AppSnackbar.show(context, msg);
+      });
+    });
+  }
 
   @override
   void dispose() {
+    _resetSub.close();
     emailController.dispose();
     super.dispose();
   }
 
   void _onSendPressed() async {
-    debugPrint('[UI] reset password button tapped -> call VM');
-
+    final state = ref.read(resetPasswordViewModelProvider);
+    if (state.isLoading) return;
     await ref
         .read(resetPasswordViewModelProvider.notifier)
         .sendResetEmail(email: emailController.text.trim());
-
-    final state = ref.read(resetPasswordViewModelProvider);
-
-    if (!state.hasError) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('reset_email_sent'.tr())),
-      );
-    }
   }
 
   @override
@@ -72,7 +81,6 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
               label: 'send_reset_link'.tr(),
               isLoading: resetState.isLoading,
               onPressed: () {
-                if (resetState.isLoading) return;
                 _onSendPressed();
               }),
           SizedBox(height: AppSpacing.spaceLG),
@@ -85,21 +93,6 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
             ),
           ),
           SizedBox(height: AppSpacing.spaceMD),
-          resetState.when(
-            data: (_) {
-              return const SizedBox();
-            },
-            loading: () => const LoadingIndicator(withBackground: false),
-            error: (e, _) {
-              String msg = 'something_went_wrong'.tr();
-
-              if (e is ResetPasswordFailure) {
-                msg = e.messageKey.tr();
-              }
-
-              return ErrorView(message: msg, fullScreen: false);
-            },
-          ),
         ],
       ),
       actions: const [],

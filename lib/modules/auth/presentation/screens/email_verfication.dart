@@ -2,23 +2,56 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:go_router/go_router.dart';
-import 'package:notes_tasks/core/constants/spacing.dart';
-import 'package:notes_tasks/core/providers/firebase/firebase_providers.dart';
-import 'package:notes_tasks/core/widgets/app_navbar_container.dart';
-import 'package:notes_tasks/core/widgets/app_scaffold.dart';
-import 'package:notes_tasks/core/widgets/app_text_link.dart';
-import 'package:notes_tasks/core/widgets/error_view.dart';
-import 'package:notes_tasks/core/widgets/loading_indicator.dart';
-import 'package:notes_tasks/core/widgets/primary_button.dart';
-import 'package:notes_tasks/core/providers/firebase/auth/email_verified_stream_provider.dart';
-import 'package:notes_tasks/modules/auth/presentation/screens/login_screen.dart';
 
-class VerifyEmailScreen extends ConsumerWidget {
+import 'package:notes_tasks/core/shared/constants/spacing.dart';
+import 'package:notes_tasks/core/data/remote/firebase/providers/firebase_providers.dart';
+import 'package:notes_tasks/core/shared/widgets/buttons/app_icon_button.dart';
+import 'package:notes_tasks/core/shared/widgets/common/app_scaffold.dart';
+import 'package:notes_tasks/core/shared/widgets/texts/app_text_link.dart';
+import 'package:notes_tasks/core/shared/widgets/common/error_view.dart';
+import 'package:notes_tasks/core/shared/widgets/common/loading_indicator.dart';
+import 'package:notes_tasks/core/shared/widgets/buttons/primary_button.dart';
+import 'package:notes_tasks/core/shared/widgets/common/app_snackbar.dart';
+import 'package:notes_tasks/core/features/auth/providers/email_verified_stream_provider.dart';
+
+class VerifyEmailScreen extends ConsumerStatefulWidget {
   const VerifyEmailScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<VerifyEmailScreen> createState() => _VerifyEmailScreenState();
+}
+
+class _VerifyEmailScreenState extends ConsumerState<VerifyEmailScreen> {
+  late final ProviderSubscription _verifiedSub;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _verifiedSub = ref.listenManual(emailVerifiedStreamProvider, (prev, next) {
+      next.whenOrNull(
+        data: (isVerified) {
+          if (!isVerified) return;
+          if (!mounted) return;
+
+          // ✅ الأفضل من push (ما بدنا نرجع لصفحة التحقق)
+          context.go('/');
+        },
+        error: (_, __) {},
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _verifiedSub.close();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final verifiedAsync = ref.watch(emailVerifiedStreamProvider);
+
     final auth = ref.read(firebaseAuthProvider); // read only data
     final authService = ref.read(authServiceProvider); // actions
 
@@ -27,14 +60,8 @@ class VerifyEmailScreen extends ConsumerWidget {
       body: Center(
         child: verifiedAsync.when(
           data: (isVerified) {
-            if (isVerified) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (context.mounted) {
-                  context.push('/');
-                }
-              });
-              return const SizedBox();
-            }
+            // ✅ ما في side effect هنا
+            if (isVerified) return const SizedBox();
 
             final email = auth.currentUser?.email ?? '';
             return Padding(
@@ -42,7 +69,11 @@ class VerifyEmailScreen extends ConsumerWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.email_outlined, size: 64),
+                  const AppIconButton(
+                    icon: Icons.email_outlined,
+                    onTap: null,
+                    size: 64,
+                  ),
                   const SizedBox(height: 20),
                   Text(
                     'verify_email_instructions'.tr(),
@@ -63,20 +94,18 @@ class VerifyEmailScreen extends ConsumerWidget {
                     onPressed: () async {
                       try {
                         await authService.sendEmailVerification();
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                                content: Text('verification_email_sent'.tr())),
-                          );
-                        }
+                        if (!mounted) return;
+                        AppSnackbar.show(
+                          context,
+                          'verification_email_sent'.tr(),
+                        );
                       } catch (e) {
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                                content: Text('verification_send_failed'
-                                    .tr(args: ['${e}']))),
-                          );
-                        }
+                        // ✅ لا نعرض raw error للمستخدم
+                        if (!mounted) return;
+                        AppSnackbar.show(
+                          context,
+                          'verification_send_failed'.tr(),
+                        );
                       }
                     },
                   ),
@@ -85,9 +114,8 @@ class VerifyEmailScreen extends ConsumerWidget {
                     textKey: 'back_to_login',
                     onPressed: () async {
                       await authService.logout();
-                      if (context.mounted) {
-                        context.pushReplacement('/login');
-                      }
+                      if (!mounted) return;
+                      context.go('/login'); // ✅ go أفضل من pushReplacement هنا
                     },
                   ),
                 ],
@@ -95,12 +123,10 @@ class VerifyEmailScreen extends ConsumerWidget {
             );
           },
           loading: () => const LoadingIndicator(withBackground: false),
-          error: (e, _) => ErrorView(
-            message: e.toString(),
+          error: (_, __) => ErrorView(
+            message: 'something_went_wrong'.tr(),
             fullScreen: false,
-            onRetry: () {
-              ref.refresh(emailVerifiedStreamProvider);
-            },
+            onRetry: () => ref.refresh(emailVerifiedStreamProvider),
           ),
         ),
       ),

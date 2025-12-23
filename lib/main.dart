@@ -2,13 +2,13 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:notes_tasks/core/routs/app_router.dart';
-import 'package:notes_tasks/core/services/firebase/firebase_initializer.dart';
+import 'package:notes_tasks/core/app/routs/app_router.dart';
+import 'package:notes_tasks/core/data/remote/firebase/firebase_initializer.dart';
 
-import 'package:notes_tasks/core/theme/app_theme.dart';
-import 'package:notes_tasks/core/theme/viewmodels/theme_viewmodel.dart';
-import 'package:notes_tasks/core/widgets/animation/fade_in.dart';
-import 'package:notes_tasks/core/widgets/animation/slide_in.dart';
+import 'package:notes_tasks/core/app/theme/app_theme.dart';
+import 'package:notes_tasks/core/app/viewmodels/theme_viewmodel.dart';
+import 'package:notes_tasks/core/shared/widgets/animation/fade_in.dart';
+import 'package:notes_tasks/core/shared/widgets/animation/slide_in.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,7 +18,7 @@ Future<void> main() async {
   runApp(
     EasyLocalization(
       supportedLocales: const [Locale('en'), Locale('ar')],
-      path: 'lib/core/assets/lang',
+      path: 'lib/core/l10n',
       fallbackLocale: const Locale('en'),
       startLocale: const Locale('en'),
       child: const ProviderScope(child: MyApp()),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:notes_tasks/core/constants/colors.dart';
-import 'package:notes_tasks/core/constants/spacing.dart';
-import 'package:notes_tasks/core/theme/text_styles.dart';
+import 'package:notes_tasks/core/shared/constants/colors.dart';
+import 'package:notes_tasks/core/shared/constants/spacing.dart';
+import 'package:notes_tasks/core/app/theme/text_styles.dart';
 import 'package:notes_tasks/modules/users/domain/entities/user_entity.dart';
 
 class UserExpandedSection extends StatelessWidget {

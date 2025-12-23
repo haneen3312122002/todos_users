@@ -44,7 +44,7 @@ String _removeLineComments(String content) {
     final trimmedLeft = line.trimLeft();
     final processedLine = _stripCommentFromLine(line);
 
-    // سطر تعليق كامل يبدأ بـ //
+
     final isPureComment =
         trimmedLeft.startsWith('//') && processedLine.trim().isEmpty;
 
@@ -56,8 +56,8 @@ String _removeLineComments(String content) {
   return buffer.toString();
 }
 
-/// يشيل التعليق اللي بـ نهاية السطر إذا كان يبدأ بـ //
-/// ويحاول يتجنب إزالة // داخل سترنغ بسيط على نفس السطر.
+
+
 String _stripCommentFromLine(String line) {
   bool inSingleQuotes = false; // '
   bool inDoubleQuotes = false; // "
@@ -65,14 +65,14 @@ String _stripCommentFromLine(String line) {
   for (int i = 0; i < line.length - 1; i++) {
     final char = line[i];
 
-    // تتبع إذا كنا داخل سترنغ بين ' '
+
     if (char == "'" && !inDoubleQuotes) {
       final prev = i > 0 ? line[i - 1] : '';
       if (prev != '\\') {
         inSingleQuotes = !inSingleQuotes;
       }
     }
-    // تتبع إذا كنا داخل سترنغ بين " "
+
     else if (char == '"' && !inSingleQuotes) {
       final prev = i > 0 ? line[i - 1] : '';
       if (prev != '\\') {
@@ -80,18 +80,18 @@ String _stripCommentFromLine(String line) {
       }
     }
 
-    // لقينا //
+
     if (!inSingleQuotes &&
         !inDoubleQuotes &&
         line[i] == '/' &&
         line[i + 1] == '/') {
-      // نشيل كل شي من هون لآخر السطر (التعليق)
+
       final beforeComment = line.substring(0, i);
-      // نشيل المسافات في نهاية السطر
+
       return beforeComment.replaceFirst(RegExp(r'\s+$'), '');
     }
   }
 
-  // ما في تعليق // خارج سترنغ
+
   return line;
 }

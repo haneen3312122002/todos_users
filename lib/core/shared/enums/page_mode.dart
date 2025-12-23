@@ -1,0 +1,4 @@
+enum PageMode {
+  view,
+  edit,
+}

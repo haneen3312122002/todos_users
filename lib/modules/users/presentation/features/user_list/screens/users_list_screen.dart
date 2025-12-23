@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:notes_tasks/core/widgets/app_scaffold.dart';
-import 'package:notes_tasks/core/widgets/error_view.dart';
-import 'package:notes_tasks/core/widgets/loading_indicator.dart';
+import 'package:notes_tasks/core/shared/widgets/common/app_scaffold.dart';
+import 'package:notes_tasks/core/shared/widgets/common/error_view.dart';
+import 'package:notes_tasks/core/shared/widgets/common/loading_indicator.dart';
 import 'package:notes_tasks/modules/users/domain/entities/user_entity.dart';
 import 'package:notes_tasks/modules/users/presentation/features/user_list/viewmodels/get_basic_users_viewmodel.dart';
 import 'package:notes_tasks/modules/users/presentation/features/user_list/widgets/user_list.dart';

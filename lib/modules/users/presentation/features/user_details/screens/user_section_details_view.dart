@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:notes_tasks/core/widgets/app_card.dart';
-import 'package:notes_tasks/core/widgets/app_list_tile.dart';
-import 'package:notes_tasks/core/widgets/app_scaffold.dart';
-import 'package:notes_tasks/core/widgets/empty_view.dart';
-import 'package:notes_tasks/core/widgets/error_view.dart';
-import 'package:notes_tasks/core/widgets/loading_indicator.dart';
+import 'package:notes_tasks/core/shared/widgets/cards/app_card.dart';
+import 'package:notes_tasks/core/shared/widgets/lists/app_list_tile.dart';
+import 'package:notes_tasks/core/shared/widgets/common/app_scaffold.dart';
+import 'package:notes_tasks/core/shared/widgets/common/empty_view.dart';
+import 'package:notes_tasks/core/shared/widgets/common/error_view.dart';
+import 'package:notes_tasks/core/shared/widgets/common/loading_indicator.dart';
 
 class UserSectionDetailsView<T> extends ConsumerWidget {
   final String title;

@@ -1,45 +1,50 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
-import 'package:notes_tasks/core/providers/firebase/firebase_providers.dart';
+import 'package:notes_tasks/modules/auth/domain/failures/auth_failure.dart';
+import 'package:notes_tasks/modules/auth/domain/mappers/auth_failure_mapper.dart';
+import 'package:notes_tasks/modules/auth/domain/usecases/login_usecase.dart';
+import 'package:notes_tasks/modules/auth/domain/usecases/logout_usecase.dart';
 
 final firebaseLoginVMProvider =
-    AsyncNotifierProvider<FirebaseLoginViewModel, fb.User?>(
+    AsyncNotifierProvider<FirebaseLoginViewModel, void>(
+  //-> the state is result not data
+  //success: asyncvaldata=null / error:asyncerror()
   FirebaseLoginViewModel.new,
   name: 'FirebaseLoginVM',
 );
 
-class FirebaseLoginViewModel extends AsyncNotifier<fb.User?> {
+class FirebaseLoginViewModel extends AsyncNotifier<void> {
+  //only turn on login / logout
   @override
-  FutureOr<fb.User?> build() async => null;
+  FutureOr<void> build() async {
+    //first operation: no data / user
+    return;
+  }
 
   Future<void> login({required String email, required String password}) async {
     if (state.isLoading) return;
-    debugPrint('[VM] login() called email=$email');
     state = const AsyncLoading();
     try {
-      final auth = ref.read(authServiceProvider);
-      debugPrint('[VM] got authService=$auth');
-      final cred = await auth.login(email: email, password: password);
-      debugPrint('[VM] service returned uid=${cred.user?.uid}');
-      state = AsyncData(cred.user);
+      final loginUseCase = ref.read(firebaseLoginUseCaseProvider);
+      await loginUseCase(email: email, password: password);
+      state = AsyncData(null); //login success , no need to get the user data
     } on fb.FirebaseAuthException catch (e, st) {
-      debugPrint('[VM] FirebaseAuthException code=${e.code} msg=${e.message}');
-      state = AsyncError(e, st);
+      final failure = mapFirebaseAuthExceptionToFailure(e);
+      state = AsyncError(failure, st);
     } catch (e, st) {
-      debugPrint('[VM] Unknown error: $e');
-      state = AsyncError(e, st);
+      state = AsyncError(const AuthFailure('something_went_wrong'), st);
     }
   }
 
   Future<void> logout() async {
     state = const AsyncLoading();
     try {
-      await ref.read(authServiceProvider).logout();
+      final logoutUseCase = ref.read(logoutUseCaseProvider);
+      await logoutUseCase();
       state = const AsyncData(null);
     } catch (e, st) {
-      state = AsyncError(e, st);
+      state = AsyncError(const AuthFailure('something_went_wrong'), st);
     }
   }
 }

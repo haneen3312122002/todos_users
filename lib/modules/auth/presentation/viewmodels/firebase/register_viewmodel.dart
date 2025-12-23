@@ -1,46 +1,46 @@
-// modules/auth/presentation/viewmodels/firebase/register_viewmodel.dart
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:firebase_auth/firebase_auth.dart' as fb;
-import 'package:notes_tasks/core/providers/firebase/firebase_providers.dart';
+import 'package:notes_tasks/modules/auth/domain/failures/auth_failure.dart';
+import 'package:notes_tasks/modules/auth/domain/usecases/register_usecase.dart';
 
 final registerViewModelProvider =
-    AsyncNotifierProvider<RegisterViewModel, fb.User?>(RegisterViewModel.new);
+    AsyncNotifierProvider<RegisterViewModel, void>(
+  RegisterViewModel.new,
+);
 
-class RegisterViewModel extends AsyncNotifier<fb.User?> {
+class RegisterViewModel extends AsyncNotifier<void> {
   @override
-  FutureOr<fb.User?> build() async => null;
+  FutureOr<void> build() async {
+    return;
+  }
 
   Future<void> register({
     required String name,
     required String email,
     required String password,
+    required String role,
   }) async {
-    if (state.isLoading) {
-      debugPrint('[RegisterVM] Ignored duplicate register() while loading');
-      return;
-    }
-
-    debugPrint('[RegisterVM] Start register: email=$email');
+    if (state.isLoading) return;
 
     state = const AsyncLoading();
-    state = await AsyncValue.guard<fb.User?>(() async {
-      final auth = ref.read(authServiceProvider);
 
-      final cred = await auth
-          .register(name: name, email: email, password: password)
-          .timeout(const Duration(seconds: 20), onTimeout: () {
-        throw TimeoutException('register() timed out after 20s');
-      });
+    try {
+      final registerUseCase = ref.read(firebaseRegisterUseCaseProvider);
+      await registerUseCase(
+        name: name,
+        email: email,
+        password: password,
+        role: role,
+      );
 
-      final user = cred.user;
-      if (user != null && !user.emailVerified) {
-        await user.sendEmailVerification();
-      }
-      debugPrint('[RegisterVM] register() completed, user=${user?.uid}');
-
-      return user;
-    });
+      // ✅ نجاح العملية (بدون fb.User)
+      state = const AsyncData(null);
+    } on AuthFailure catch (f, st) {
+      // ✅ Failure موحد جاهز للـUI
+      state = AsyncError(f, st);
+    } catch (e, st) {
+      // ✅ أي خطأ غير متوقع يتحول لرسالة عامة
+      state = AsyncError(const AuthFailure('something_went_wrong'), st);
+    }
   }
 }
