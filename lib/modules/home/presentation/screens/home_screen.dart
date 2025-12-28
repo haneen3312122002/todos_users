@@ -91,16 +91,6 @@ class _HomePageState extends ConsumerState<HomePage> {
                 padChild: false,
                 child: const FreelancerHome(),
               );
-
-            default:
-              return HomeShell(
-                title: 'home_title'.tr(),
-                subtitle: subtitle,
-                showSearch: false,
-                searchController: null,
-                padChild: true,
-                child: const EmptyView(),
-              );
           }
         },
         loading: () => HomeShell(

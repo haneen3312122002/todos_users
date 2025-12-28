@@ -147,4 +147,17 @@ class JobsService {
       return JobModel.fromDoc(doc);
     });
   }
+  // =============================
+// Streams
+// =============================
+
+  /// ✅ Feed حسب الكاتيجوري (للفريلانسر)
+  Stream<List<JobEntity>> watchJobsByCategory(String category) {
+    return _jobsCol
+        .where('isOpen', isEqualTo: true)
+        .where('category', isEqualTo: category)
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map((snap) => snap.docs.map(JobModel.fromDoc).toList());
+  }
 }

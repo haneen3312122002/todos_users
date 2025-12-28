@@ -11,3 +11,8 @@ final jobsFeedStreamProvider = StreamProvider<List<JobEntity>>((ref) {
   final useCase = ref.watch(watchJobsFeedUseCaseProvider);
   return useCase();
 });
+final jobsByCategoryStreamProvider =
+    StreamProvider.family<List<JobEntity>, String>((ref, category) {
+  final useCase = ref.watch(getJobsByCategoryUseCaseProvider);
+  return useCase(category: category);
+});

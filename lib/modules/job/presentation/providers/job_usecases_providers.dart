@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:notes_tasks/core/features/job/service/job_provider.dart';
 import 'package:notes_tasks/modules/job/domain/usecases/add_job_usecase.dart';
 import 'package:notes_tasks/modules/job/domain/usecases/delete_job_usecase.dart';
+import 'package:notes_tasks/modules/job/domain/usecases/get_jobs_by_category_usecase.dart';
 import 'package:notes_tasks/modules/job/domain/usecases/update_job_usecase.dart';
 import 'package:notes_tasks/modules/job/domain/usecases/watch_jobs_feed_usecase.dart';
 import 'package:notes_tasks/modules/job/domain/usecases/watch_my_jobs_usecase.dart';
@@ -29,4 +30,9 @@ final updateJobUseCaseProvider = Provider<UpdateJobUseCase>((ref) {
 final deleteJobUseCaseProvider = Provider<DeleteJobUseCase>((ref) {
   final service = ref.read(jobsServiceProvider);
   return DeleteJobUseCase(service);
+});
+final getJobsByCategoryUseCaseProvider =
+    Provider<GetJobsByCategoryUseCase>((ref) {
+  final service = ref.watch(jobsServiceProvider);
+  return GetJobsByCategoryUseCase(service);
 });

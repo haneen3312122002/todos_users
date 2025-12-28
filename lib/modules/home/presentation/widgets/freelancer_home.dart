@@ -14,6 +14,7 @@ import 'package:notes_tasks/core/shared/widgets/common/profile_items_section.dar
 import 'package:notes_tasks/core/shared/widgets/lists/app_grid_view.dart';
 import 'package:notes_tasks/core/shared/widgets/texts/app_text_link.dart';
 import 'package:notes_tasks/core/shared/widgets/common/error_view.dart';
+import 'package:notes_tasks/modules/home/presentation/screens/jobs_by_category_page.dart';
 
 import 'package:notes_tasks/modules/job/domain/entities/job_entity.dart';
 import 'package:notes_tasks/modules/job/presentation/providers/jobs_stream_providers.dart';
@@ -51,7 +52,15 @@ class FreelancerHome extends ConsumerWidget {
                 return CategoryTileCard(
                   title: c.label, // إذا بدك ترجمته: خلي label key
                   icon: c.icon,
-                  onTap: () {},
+                  onTap: () {
+                    context.push(
+                      AppRoutes.jobsByCategory,
+                      extra: JobsByCategoryArgs(
+                        category: c.id, // مهم: نفس القيمة المخزنة بالفايربيس
+                        titleLabel: c.label,
+                      ),
+                    );
+                  },
                 );
               },
             ),
